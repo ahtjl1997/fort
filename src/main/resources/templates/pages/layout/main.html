@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org" >
 	<head>
-		<title>极地内控堡垒主机系统</title>
+		<title>运维审计系统</title>
 		<meta charset="utf-8">
 		<link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
 		<link rel="icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
@@ -76,7 +76,7 @@
 		<div class="navbar main hidden-print">
 		
 			<!-- Brand -->
-			<a th:href="@{/home}" class="appbrand pull-left"><span>极地堡垒主机<span>v3.0</span></span></a>
+			<a th:href="@{/home}" class="appbrand pull-left"><span>运维审计系统<span>v1.0</span></span></a>
 			
 			<!-- Menu Toggle Button -->
 			<button type="button" class="btn btn-navbar">
@@ -125,7 +125,7 @@
 				<a class="img" href="" style="height:44px;">
 				</a>
 				<span>
-					<strong>欢迎使用堡垒主机</strong>
+					<strong th:text="${ONLINE_USER.roleName}"></strong>
 					<a href="" class="glyphicons right_arrow" th:text="${ONLINE_USER.name}">mosaicpro <i></i></a>
 				</span>
 			</span>
@@ -198,7 +198,7 @@
 				
 		<div id="footer" class="hidden-print">
 			<!--  Copyright Line -->
-			<div class="copy">&copy; 2017 - <a href="#">极地内控堡垒主机</a> - 自由研发版</div>
+			<div class="copy">&copy; 2017 - <a href="#">运维审计系统</a> - 自由研发版</div>
 			<!--  End Copyright Line -->
 	
 		</div>
