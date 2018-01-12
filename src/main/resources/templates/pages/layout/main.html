@@ -352,6 +352,14 @@
 				suffix: [],
 				meridiem: []
 			};
+			
+			function bodyHeight(){
+				
+				$("#content").css({"height" : window.innerHeight - 100});
+			}
+			bodyHeight();
+			
+			window.onresize = bodyHeight;
 		</script>
 	</body>
 </html>
