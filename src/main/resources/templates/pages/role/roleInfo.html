@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="ie lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html class="ie lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="ie lt-ie9"> <![endif]-->
+<!--[if gt IE 8]> <html class="ie gt-ie8"> <![endif]-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		
+		<!-- Bootstrap -->
+		<link th:href="@{/common/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/css/responsive.css}" rel="stylesheet" />
+		
+		<!-- Glyphicons Font Icons -->
+		<link th:href="@{/common/theme/css/glyphicons.css}" rel="stylesheet" />
+		
+		<!-- Uniform Pretty Checkboxes -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/pixelmatrix-uniform/css/uniform.default.css}" rel="stylesheet" />
+		
+		<!-- PrettyPhoto -->
+	    <link th:href="@{/common/theme/scripts/plugins/gallery/prettyphoto/css/prettyPhoto.css}" rel="stylesheet" />
+		
+		<!-- Bootstrap Extended -->
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap-responsive.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-wysihtml5/css/bootstrap-wysihtml5-0.0.2.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-select/bootstrap-select.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/extend/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+		
+		<!-- DateTimePicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/bootstrap-datetimepicker/css/datetimepicker.css}" rel="stylesheet" />
+		
+		<!-- JQueryUI -->
+		<link th:href="@{/common/theme/scripts/plugins/system/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.min.css}" rel="stylesheet" />
+		
+		<!-- MiniColors ColorPicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/color/jquery-miniColors/jquery.miniColors.css}" rel="stylesheet" />
+		
+		<!-- Notyfy Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/jquery.notyfy.css}" rel="stylesheet" />
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/themes/default.css}" rel="stylesheet" />
+		
+		<!-- Gritter Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/Gritter/css/jquery.gritter.css}" rel="stylesheet" />
+		
+		<!-- Easy-pie Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/charts/easy-pie/jquery.easy-pie-chart.css}" rel="stylesheet" />
+	
+		<!-- Google Code Prettify Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/other/google-code-prettify/prettify.css}" rel="stylesheet" />
+	
+		<!-- Main Theme Stylesheet :: CSS -->
+		<link th:href="@{/common/theme/css/style-dark.css?1369414383}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+		<style type="text/css">
+			.roleText{
+			    float: left;
+   				margin-top: 6px;
+  			 	padding-right: 6px;
+			}
+			.toggle-button{
+				float: left;
+				margin-right: 5px;
+				margin-top: 2px;
+			}
+		</style>
+	</head>
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/role/query')" class="glyphicons eye_open"><i></i>角色管理</a></li>
+			<li class="divider"></li>
+			<li th:text="${role.id eq 0 ? '添加角色' : '编辑角色'}">添加角色</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<!-- Form -->
+			<form th:object="${role}" th:action="*{id eq 0 ? '/role/insert' : '/role/update'}" class="form-horizontal" style="margin-bottom: 0;" id="roleForm" method="post" autocomplete="off">
+				<div class="widget">
+					<!-- Widget heading -->
+					<div class="widget-head">
+						<h4 class="heading">基本信息</h4>
+					</div>
+					<!-- // Widget heading END -->
+					<div class="widget-body">
+						<div class="row-fluid">
+							<!-- Group -->
+							<div class="control-group">
+								<label class="control-label" for="name">角色名称</label>
+								<div class="controls">
+									<input class="span6" th:field="*{name}" type="text" th:readonly="*{name eq '系统管理员' ? 'readonly' : 'false'}" placeholder="请输入角色名称"/>
+									<input th:if="*{id}" type="hidden" th:field="*{id}" />
+								</div>
+							</div>
+							<!-- // Group END -->
+						</div>
+						<div class="row-fluid">
+							<!-- Group -->
+							<div class="control-group">
+								<label class="control-label" for="hr"></label>
+								<div class="controls">
+									
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<!-- Group -->
+							<div class="control-group">
+								<label class="control-label" for="hr"></label>
+								<div class="controls">
+									
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<!-- Group -->
+							<div class="control-group">
+								<label class="control-label" for="name">描述信息</label>
+								<div class="controls">
+									<textarea class="wysihtml5 span6" style="resize: none;height: 80px;" placeholder="请输入角色名称" th:field="*{memo}" th:readonly="*{name eq '系统管理员' ? 'readonly' : 'false'}"></textarea>
+								</div>
+							</div>
+							<!-- // Group END -->
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="widget">
+						<!-- Widget heading -->
+						<div class="widget-head">
+							<h4 class="heading">权限配置</h4>
+						</div>
+						<!-- // Widget heading END -->
+						<div class="widget-body">
+							<div class="row-fluid">
+								<!-- Column -->
+								<div class="span12">
+									<div class="widget">
+										<!-- Widget heading -->
+										<div class="widget-head">
+											<h4 class="heading">用户管理</h4>
+											<div class="toggle-button" style="margin-top: 2px;">
+												<input type="checkbox" th:checked="*{newEmp eq 1 and updateEmp eq 1 and delEmp eq 1 and viewEmp eq 1 and importEmp eq 1 and exportEmp eq 1 ? 'checked' : 'false'}"/>
+											</div>
+										</div>
+										<div class="widget-body">
+											<div class="row-fluid">
+												<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+													<!-- Table body -->
+													<tbody role="alert" aria-live="polite" aria-relevant="all">
+														<tr class="gradeA odd">
+															<td class="">
+																<div style="float: left;">
+																	<div class="roleText">新建用户：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{newEmp}" th:checked="*{newEmp eq 1 ? 'checked':'false'}" value="1"/>
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">修改用户：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{updateEmp}" th:checked="*{updateEmp eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">删除用户：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{delEmp}" th:checked="*{delEmp eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">查看用户：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{viewEmp}" th:checked="*{viewEmp eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">导入用户：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{importEmp}" th:checked="*{importEmp eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">导出用户：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{exportEmp}" th:checked="*{exportEmp eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+													<!-- // Table body END -->
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Column End -->
+							</div>
+							<div class="row-fluid">
+								<!-- Column -->
+								<div class="span12">
+									<div class="widget">
+										<!-- Widget heading -->
+										<div class="widget-head">
+											<h4 class="heading">用户组管理</h4>
+											<div class="toggle-button" style="margin-top: 2px;">
+												<input type="checkbox" th:checked="*{newEmpGroup eq 1 and updateEmpGroup eq 1 and delEmpGroup eq 1 and viewEmpGroup eq 1 ? 'checked' : 'false'}" />
+											</div>
+										</div>
+										<div class="widget-body">
+											<div class="row-fluid">
+												<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+													<!-- Table body -->
+													<tbody role="alert" aria-live="polite" aria-relevant="all">
+														<tr class="gradeA odd">
+															<td class="">
+																<div style="float: left;">
+																	<div class="roleText">新建分组：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{newEmpGroup}" th:checked="*{newEmpGroup eq 1 ? 'checked':'false'}" value="1"/>
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">修改分组：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{updateEmpGroup}" th:checked="*{updateEmpGroup eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">删除分组：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{delEmpGroup}" th:checked="*{delEmpGroup eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">查看分组：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{viewEmpGroup}" th:checked="*{viewEmpGroup eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+													<!-- // Table body END -->
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Column End -->
+							</div>
+							<div class="row-fluid">
+								<!-- Column -->
+								<div class="span12">
+									<div class="widget">
+										<!-- Widget heading -->
+										<div class="widget-head">
+											<h4 class="heading">角色管理</h4>
+											<div class="toggle-button" style="margin-top: 2px;">
+												<input type="checkbox" th:checked="*{newRole eq 1 and updateRole eq 1 and delRole eq 1 and viewRole eq 1 ? 'checked' : 'false'}" />
+											</div>
+										</div>
+										<div class="widget-body">
+											<div class="row-fluid">
+												<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+													<!-- Table body -->
+													<tbody role="alert" aria-live="polite" aria-relevant="all">
+														<tr class="gradeA odd">
+															<td class="">
+																<div style="float: left;">
+																	<div class="roleText">新建角色：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{newRole}" th:checked="*{newRole eq 1 ? 'checked':'false'}" value="1"/>
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">修改角色：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{updateRole}" th:checked="*{updateRole eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">删除角色：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{delRole}" th:checked="*{delRole eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">查看角色：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{viewRole}" th:checked="*{viewRole eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+													<!-- // Table body END -->
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Column End -->
+							</div>
+							
+							<div class="row-fluid">
+								<!-- Column -->
+								<div class="span12">
+									<div class="widget">
+										<!-- Widget heading -->
+										<div class="widget-head">
+											<h4 class="heading">设备管理</h4>
+											<div class="toggle-button" style="margin-top: 2px;">
+												<input type="checkbox" th:checked="*{newRes eq 1 and updateRes eq 1 and delRes eq 1 and viewRes eq 1 ? 'checked' : 'false'}" />
+											</div>
+										</div>
+										<div class="widget-body">
+											<div class="row-fluid">
+												<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+													<!-- Table body -->
+													<tbody role="alert" aria-live="polite" aria-relevant="all">
+														<tr class="gradeA odd">
+															<td class="">
+																<div style="float: left;">
+																	<div class="roleText">新建设备：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{newRes}" th:checked="*{newRes eq 1 ? 'checked':'false'}" value="1"/>
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">修改设备：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{updateRes}" th:checked="*{updateRes eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">删除设备：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{delRes}" th:checked="*{delRes eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+																<div style="float: left;">
+																	<div class="roleText">查看设备：</div>
+																	<div class="toggle-button">
+																		<input type="checkbox" th:field="*{viewRes}" th:checked="*{viewRes eq 1 ? 'checked':'false'}" value="1" />
+																	</div>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+													<!-- // Table body END -->
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Column End -->
+							</div>
+							
+							<hr class="separator">
+							<div class="form-actions">
+								<button type="submit" id="subData" th:disabled="*{name eq '系统管理员' ? 'disabled' : 'false'}" class="btn btn-success btn-icon glyphicons ok"><i></i>保&nbsp;存</button>
+								<button type="button" class="btn btn-icon btn-default glyphicons circle_remove" onclick="showMain('/role/query')"><i></i>取&nbsp;消</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<script th:src="@{/common/bootstrap/extend/bootstrap-toggle-buttons/static/js/jquery.toggle.buttons.js}"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				// bootstrap-toggle-buttons
+				if ($('.toggle-button').length) $('.toggle-button').toggleButtons();
+				$('.toggle-button').css("width","90px");
+				$(".toggle-button .labelLeft").css("width","46px");
+			});
+			$.validator.setDefaults(
+			{
+				submitHandler: function() { 
+					//alert("submitted!");
+					saveData();
+				},
+				showErrors: function(map, list) 
+				{
+					this.currentElements.parents('label:first, .controls:first').find('.error').remove();
+					this.currentElements.parents('.control-group:first').removeClass('error');
+					
+					$.each(list, function(index, error) 
+					{
+						var ee = $(error.element);
+						var eep = ee.parents('label:first').length ? ee.parents('label:first') : ee.parents('.controls:first');
+						
+						ee.parents('.control-group:first').addClass('error');
+						eep.find('.error').remove();
+						eep.append('<p class="error help-block"><span class="label label-important">' + error.message + '</span></p>');
+					});
+					//refreshScrollers();
+				}
+			});
+			
+			jQuery.validator.addMethod("checkName",function(value,element){
+				var flag = false;
+				if(value != ''){
+					$.ajax({
+						url:"/role/checkName",
+						data:"name=" + value,
+						dataType:"text",
+						async:false,
+						success:function(roleId){
+							if(roleId == 0 || roleId == '0' || roleId == $("#id").val()){
+								flag = true;
+							}
+						}
+					});
+				}
+				return flag;
+			});
+			
+			$("#roleForm").validate({
+				rules:{
+					name: {
+						required: true,
+						minlength: 2,
+						maxlength: 25,
+						checkName: true
+					},
+					memo:{
+						maxlength: 20
+					}
+				},
+				messages:{
+					name: {
+						required: "请输入角色名称",
+						minlength: "请输入至少两个字符组成的角色名称",
+						maxlength: "名称不能超过25个字",
+						checkName: "角色名称信息重复，请重新输入"
+					},
+					memo:{
+						maxlength: "描述信息不能超过20个字"
+					}
+				}
+			});
+			
+			function saveData(){
+				var dataStr = $("#roleForm").serialize().toString();
+				$("input[type='checkbox']").each(function(){
+					if(!$(this).prop("checked") && $(this).prop("name") != ''){
+						dataStr += '&' + $(this).prop("name") + "=0";
+					}
+				});
+				$.ajax({
+		             type: "POST",
+		             url: $("#roleForm").prop("action"),
+		             data: dataStr,
+		             success: function (result) {
+		            	 $("#content").html(result);
+		             },error:function(responseTxt,statusTxt,xhr){
+		            	 $("#content").html(statusTxt);
+		             }
+		    	 });
+			}
+		</script>
+	</body>
+</html>

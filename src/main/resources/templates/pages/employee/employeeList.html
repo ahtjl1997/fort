@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		<!-- Select2 Plugin -->
+		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
+	</head>
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/employee/query')" class="glyphicons user_add"><i></i>用户管理</a></li>
+			<li class="divider"></li>
+			<li>用户列表</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<div class="widget">
+				<!-- Widget heading -->
+				<div class="widget-head">
+					<h4 class="heading">用户列表</h4>
+				</div>
+				<!-- // Widget heading END -->
+				<div class="widget-body">
+					<div class="row-fluid">
+  						<div class="span12">
+  							<form th:action="@{/employee/query}" method="post">
+								<!-- Table -->
+								<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline" role="grid">
+									<div class="row-fluid">
+										<div class="span8">
+											<div id="DataTables_Table_0_length" class="dataTables_length">
+												<label>
+													<input type="text" name="paramQuery" th:value="${paramQuery}" aria-controls="DataTables_Table_0" style="margin-right: 5px;" placeholder="请输入查询条件">
+													<a onclick="query()" href="#" class="glyphicons no-js search" style="margin-top: 2px;"><i></i></a>
+													&nbsp;
+													<select id="role_select" style="width: 130px;" name="roleId">
+														<option th:each="r:${roleList}" th:selected="${roleId eq r.id ? 'selected' : 'false'}" th:value="${r.id}" th:text="${r.name}"></option>
+													</select>
+													&nbsp;
+													<select id="group_select" style="width: 130px;" name="groupId">
+														<option th:each="g:${groupList}" th:selected="${groupId eq g.id ? 'selected' : 'false'}" th:value="${g.id}" th:text="${g.name}"></option>
+													</select>
+													&nbsp;
+													<select id="status_select" style="width: 130px;" name="status">
+														<option value="-1" th:selected="${status eq -1 ? 'selected' : 'false'}">请选择状态</option>
+														<option value="1" th:selected="${status eq 1 ? 'selected' : 'false'}">激活</option>
+														<option value="0" th:selected="${status eq 0 ? 'selected' : 'false'}">锁定</option>
+													</select>
+												</label>
+											</div>
+										</div>
+										<div class="span4">
+											<div class="dataTables_filter" id="DataTables_Table_0_filter">
+												<label>
+													<a href="#" title="激活" class="glyphicons no-js unlock" onclick="statuss('1')"><i></i></a>&nbsp;
+													<a href="#" title="锁定" class="glyphicons no-js lock" onclick="statuss('0')"><i></i></a>&nbsp;
+													<a href="#" title="添加" class="glyphicons no-js circle_plus" onclick="showMain('/employee/insertPage')"><i></i></a>&nbsp;
+													<a href="#" title="删除" class="glyphicons no-js circle_remove" onclick="dels()"><i></i></a>&nbsp;
+													<a href="#" title="导入" class="glyphicons no-js upload"><i></i></a>&nbsp;
+													<a href="#" title="导出" class="glyphicons no-js download"><i></i></a>&nbsp;
+												</label>
+											</div>
+										</div>
+									</div>
+									<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+											
+										<!-- Table heading -->
+										<thead>
+											<tr role="row">
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 10px;">
+												  <div >
+													<input type="checkbox" class="checkbox" id="checkAll" style="width: 18px;"/>
+												  </div>
+												</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">用户账号</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">用户姓名</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 60px;">用户状态</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">所属角色</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">所属分组</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width:100px;">操作</th>
+											</tr>
+										</thead>
+										
+										<!-- // Table heading END -->
+										
+										<!-- Table body -->
+										
+										<tbody role="alert" aria-live="polite" aria-relevant="all">
+											<tr class="gradeA odd" th:if="${#lists.isEmpty(list)}">
+												<td colspan="7" style="text-align: center;">没有查询到匹配的信息</td>
+											</tr>
+											<tr class="gradeA odd" th:each="e:${list}">
+												<td class="">
+													<input type="checkbox" class="checkbox" th:id="${'id_' + e.id}" name="ids" style="width: 18px;background-color: #FFF;" th:value="${e.id}" />
+												</td>
+												<td class="" th:text="${e.username}"></td>
+												<td class="" th:text="${e.name}"></td>
+												<td class="" >
+													<a th:if="${e.status==1}" href="#" title="激活" class="glyphicons no-js ok_2"><i></i></a>
+													<a th:if="${e.status==0}" href="#" title="锁定" class="glyphicons no-js remove_2"><i></i></a>
+												</td>
+												<td class="" th:text="${e.roleName}"></td>
+												<td class="" th:text="${e.groupName}"></td>
+												<td class="">
+													<a th:if="${e.status==0}" href="#" title="激活" th:onclick="'status(\'' + ${e.id} + '\',\'1\')'" class="glyphicons no-js unlock"><i></i></a>
+													<a th:if="${e.status==1}" href="#" title="锁定" th:onclick="'status(\'' + ${e.id} + '\',\'0\')'" class="glyphicons no-js lock"><i></i></a>
+													<a href="#" title="编辑" class="glyphicons no-js pencil" th:onclick="'showMain(\'/employee/edit?id=' + ${e.id} + '\')'"><i></i></a>
+													<a href="#" title="删除" class="glyphicons no-js circle_remove" th:onclick="'del(' + ${e.id} + ')'"><i></i></a>
+												</td>
+											</tr>
+										</tbody>
+										<!-- // Table body END -->
+									</table>
+									<div class="row-fluid">
+										<div th:include="pages/commons/page :: page"></div>
+									</div>
+								</div>
+							</form>
+  						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#role_select").select2();
+				$("#group_select").select2();
+				$("#status_select").select2();
+				$("#role_select").change(function(){
+					query();
+				});
+				$("#group_select").change(function(){
+					query();
+				});
+				$("#status_select").change(function(){
+					query();
+				});
+				$("input[name='paramQuery']").keypress(function(event){
+					if(event.keyCode == 13){
+						query();
+					}
+				});
+				
+				$("#checkAll").click(function(){
+					if($(this).prop("checked")){
+						$("input[name='ids']").prop("checked",true);
+					}else{
+						$("input[name='ids']").prop("checked",false);
+					}
+				});
+			});
+			
+			function del(id){
+				bootbox.setLocale('cn');
+				bootbox.confirm("确定删除该用户吗?", function(result) 
+				{
+					if(result){
+						showMain('/employee/delete?id=' + id);
+					}
+				});
+			}
+			
+			function dels(){
+				if($("input[name='ids']:checked").length == 0){
+					bootbox.setLocale('cn');
+					bootbox.alert("请选择要删除的用户！", function(result) 
+					{
+						
+					});
+				}else{
+					var ids = "";
+					$("input[name='ids']:checked").each(function(index,item){
+						if(index > 0){
+							ids += ',';
+						}
+						ids += item.value;
+					});
+					bootbox.setLocale('cn');
+					bootbox.confirm("确定删除已选择的用户吗？", function(result) 
+					{
+						if(result){
+							showMain('/employee/deletes?ids=' + ids);
+						}
+					});
+				}
+			}
+			
+			function status(id,status){
+				bootbox.setLocale('cn');
+				bootbox.confirm(status == 0 ? "确定锁定该用户吗？" : "确定激活该用户吗？", function(result) 
+				{
+					if(result){
+						showMain('/employee/status?id=' + id + '&status=' + status);
+					}
+				});
+			}
+			
+			function statuss(status){
+				if($("input[name='ids']:checked").length == 0){
+					bootbox.setLocale('cn');
+					bootbox.alert(status == 0 ? "请选择要锁定的用户！" : "请选择要激活的用户！", function(result) 
+					{
+						
+					});
+				}else{
+					var ids = "";
+					$("input[name='ids']:checked").each(function(index,item){
+						if(index > 0){
+							ids += ',';
+						}
+						ids += item.value;
+					});
+					bootbox.setLocale('cn');
+					bootbox.confirm(status == 0 ? "确定锁定已选择的用户吗？" : "确定激活已选择的用户吗？", function(result) 
+					{
+						if(result){
+							showMain('/employee/statuss?ids=' + ids + '&status=' + status);
+						}
+					});
+				}
+			}
+		</script>
+	</body>
+</html>

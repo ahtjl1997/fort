@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="false"/>
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<setting name="logImpl" value="LOG4J2"/>
+	</settings>
+	<typeAliases>
+		<typeAlias alias="employee" type="com.fort.module.employee.Employee"/>
+		<typeAlias alias="employeeGroup" type="com.fort.module.employee.EmployeeGroup"/>
+		<typeAlias alias="role" type="com.fort.module.role.Role"/>
+		<typeAlias alias="resource" type="com.fort.module.resource.Resource"/>
+		<typeAlias alias="account" type="com.fort.module.resource.Account"/>
+		<typeAlias alias="os" type="com.fort.module.os.Os"/>
+		<typeAlias alias="resType" type="com.fort.module.os.ResType"/>
+	</typeAliases>
+</configuration>

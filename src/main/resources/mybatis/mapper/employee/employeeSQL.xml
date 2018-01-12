@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employee">
+	<resultMap type="employee" id="employeeResult">
+		<result property="id" 			column="id" 			javaType="int"/>
+		<result property="name" 		column="name" 			javaType="java.lang.String"/>
+		<result property="username" 	column="login_name" 	javaType="java.lang.String"/>
+		<result property="memo" 		column="memo" 			javaType="java.lang.String"/>
+		<result property="mobile" 		column="mobile" 		javaType="java.lang.String"/>
+		<result property="tel" 			column="tel" 			javaType="java.lang.String"/>
+		<result property="organization" column="organization" 	javaType="java.lang.String"/>
+		<result property="email" 		column="email" 			javaType="java.lang.String"/>
+		<result property="updatePwd" 	column="update_pwd" 	javaType="int"/>
+		<result property="authType" 	column="auth_type" 		javaType="int"/>
+		<result property="status" 		column="status" 		javaType="int"/>
+		<result property="startWeek" 	column="start_week" 	javaType="int"/>
+		<result property="endWeek" 		column="end_week" 		javaType="int"/>
+		<result property="pwdTimeOut" 	column="pwd_timeout" 	javaType="java.util.Date"/>
+		<result property="createTime" 	column="create_time" 	javaType="java.util.Date"/>
+		<result property="updateTime" 	column="update_time" 	javaType="java.util.Date"/>
+		<result property="roleId"		column="role_id"		javaType="int"/>
+		<result property="groupId"		column="group_id"		javaType="int"/>
+		<result property="roleName" 	column="role_name" 		javaType="java.lang.String"/>
+		<result property="groupName" 	column="group_name" 	javaType="java.lang.String"/>
+	</resultMap>
+	<!-- 根据登录名查询用户信息 -->
+	<select id="queryByLoginName" parameterType="java.lang.String" resultMap="employeeResult">
+		<![CDATA[
+			SELECT
+			  e.`id`,
+			  e.`name`,
+			  e.`login_name`,
+			  e.`create_time`,
+			  e.`update_time`,
+			  e.`memo`,
+			  e.`mobile`,
+			  e.`tel`,
+			  e.`email`,
+			  e.`organization`,
+			  e.`update_pwd`,
+			  e.`auth_type`,
+			  e.`status`,
+			  e.`start_week`,
+			  e.`end_week`,
+			  e.`pwd_timeout`,
+			  e.`role_id`,
+			  e.`group_id`,
+			  r.`name` AS role_name,
+			  eg.`name` AS group_name
+			FROM `employee` e LEFT JOIN `role` r ON e.role_id = r.id LEFT JOIN `employee_group` eg ON e.group_id = eg.id WHERE e.login_name = #{loginName}
+		]]>
+	</select>
+	<!-- 自定义条件查询用户信息 -->
+	<select id="query" parameterType="java.util.HashMap" resultMap="employeeResult">
+		<![CDATA[
+			SELECT
+			  e.`id`,
+			  e.`name`,
+			  e.`login_name`,
+			  e.`create_time`,
+			  e.`update_time`,
+			  e.`memo`,
+			  e.`mobile`,
+			  e.`tel`,
+			  e.`email`,
+			  e.`organization`,
+			  e.`update_pwd`,
+			  e.`auth_type`,
+			  e.`status`,
+			  e.`start_week`,
+			  e.`end_week`,
+			  e.`pwd_timeout`,
+			  e.`role_id`,
+			  e.`group_id`,
+			  r.`name` AS role_name,
+			  eg.`name` AS group_name
+			FROM `employee` e LEFT JOIN `role` r ON e.role_id = r.id LEFT JOIN `employee_group` eg ON e.group_id = eg.id
+		]]>
+		<where>
+			<if test="roleId != 0 and roleId != ''">
+				<![CDATA[
+					e.role_id = #{roleId}
+				]]>
+			</if>
+			<if test="groupId != 0 and groupId != ''">
+				<![CDATA[
+					AND e.group_id = #{groupId}
+				]]>
+			</if>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (e.`name` LIKE CONCAT('%',#{keyword},'%') OR e.login_name LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+			<if test="status != -1">
+				<![CDATA[
+					AND e.status = #{status}
+				]]>
+			</if>
+		</where>
+	</select>
+	<!-- 自定义条件统计用户总记录数 -->
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(e.`id`) FROM `employee` e
+		]]>
+		<where>
+			<if test="roleId != 0 and roleId != ''">
+				<![CDATA[
+					e.role_id = #{roleId}
+				]]>
+			</if>
+			<if test="groupId != 0 and groupId != ''">
+				<![CDATA[
+					AND e.group_id = #{groupId}
+				]]>
+			</if>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (e.`name` LIKE CONCAT('%',#{keyword},'%') OR e.login_name LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+			<if test="status != -1">
+				<![CDATA[
+					AND e.status = #{status}
+				]]>
+			</if>
+		</where>
+	</select>
+	<!-- 根据用户ID查询用户信息 -->
+	<select id="queryById" parameterType="int" resultMap="employeeResult">
+		<![CDATA[
+			SELECT
+			  e.`id`,
+			  e.`name`,
+			  e.`login_name`,
+			  e.`create_time`,
+			  e.`update_time`,
+			  e.`memo`,
+			  e.`mobile`,
+			  e.`tel`,
+			  e.`email`,
+			  e.`organization`,
+			  e.`update_pwd`,
+			  e.`auth_type`,
+			  e.`status`,
+			  e.`start_week`,
+			  e.`end_week`,
+			  e.`pwd_timeout`,
+			  e.`role_id`,
+			  e.`group_id`,
+			  r.`name` AS role_name,
+			  eg.`name` AS group_name
+			FROM `employee` e LEFT JOIN `role` r ON e.role_id = r.id LEFT JOIN `employee_group` eg ON e.group_id = eg.id WHERE e.`id` = #{id}
+		]]>
+	</select>
+	<!-- 新建用户信息 -->
+	<insert id="insert" parameterType="employee">
+		<![CDATA[
+			INSERT INTO `employee`
+            (`name`,
+             `login_name`,
+             `password`,
+             `create_time`,
+             `memo`,
+             `mobile`,
+             `tel`,
+			 `email`,
+             `organization`,
+             `update_pwd`,
+             `auth_type`,
+             `status`,
+             `start_week`,
+             `end_week`,
+             `pwd_timeout`
+        ]]>
+        <if test="roleId != 0">
+			<![CDATA[
+				,`role_id`
+			]]>
+		</if>
+		<if test="groupId != 0">
+			<![CDATA[
+				,`group_id`
+			]]>
+		</if>
+        <![CDATA[
+           )VALUES (
+			        #{name},
+			        #{username},
+			        #{password},
+			        #{createTime},
+			        #{memo},
+			        #{mobile},
+			        #{tel},
+			        #{email},
+			        #{organization},
+			        #{updatePwd},
+			        #{authType},
+			        #{status},
+			        #{startWeek},
+			        #{endWeek},
+			        #{pwdTimeOut}
+		]]>
+        <if test="roleId != 0">
+			<![CDATA[
+				,#{roleId}
+			]]>
+		</if>
+		<if test="groupId != 0">
+			<![CDATA[
+				,#{groupId}
+			]]>
+		</if>
+        <![CDATA[
+			)
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<!-- 更新用户信息 -->
+	<update id="update" parameterType="employee">
+		<![CDATA[
+			UPDATE `employee` SET 
+			  `name` = #{name},
+		]]>
+		<if test="password != null and password != ''">
+			<![CDATA[
+				  `password` = #{password},
+			]]>
+		</if>
+		<if test="roleId != 0">
+			<![CDATA[
+				`role_id` = #{roleId},
+			]]>
+		</if>
+		<if test="roleId == 0">
+			<![CDATA[
+				`role_id` = NULL,
+			]]>
+		</if>
+		<if test="groupId != 0">
+			<![CDATA[
+				`group_id` = #{groupId},
+			]]>
+		</if>
+		<if test="groupId == 0">
+			<![CDATA[
+				`group_id` = NULL,
+			]]>
+		</if>
+		<![CDATA[
+			  `update_time` = #{updateTime},
+			  `memo` = #{memo},
+			  `mobile` = #{mobile},
+			  `tel` = #{tel},
+			  `email` = #{email},
+			  `organization` = #{organization},
+			  `update_pwd` = #{updatePwd},
+			  `auth_type` = #{authType},
+			  `status` = #{status},
+			  `start_week` = #{startWeek},
+			  `end_week` = #{endWeek},
+			  `pwd_timeout` = #{pwdTimeOut}
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	<!-- 删除用户信息 -->
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM employee WHERE id = #{id}
+		]]>
+	</delete>
+	<!-- 更新用户状态 -->
+	<update id="updateStatus" parameterType="java.util.HashMap">
+		<![CDATA[
+			UPDATE employee SET status = #{status} WHERE id = #{id}
+		]]>
+	</update>
+</mapper>

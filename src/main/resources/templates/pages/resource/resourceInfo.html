@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="ie lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html class="ie lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="ie lt-ie9"> <![endif]-->
+<!--[if gt IE 8]> <html class="ie gt-ie8"> <![endif]-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		
+		<!-- Bootstrap -->
+		<link th:href="@{/common/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/css/responsive.css}" rel="stylesheet" />
+		
+		<!-- Glyphicons Font Icons -->
+		<link th:href="@{/common/theme/css/glyphicons.css}" rel="stylesheet" />
+		
+		<!-- Uniform Pretty Checkboxes -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/pixelmatrix-uniform/css/uniform.default.css}" rel="stylesheet" />
+		
+		<!-- PrettyPhoto -->
+	    <link th:href="@{/common/theme/scripts/plugins/gallery/prettyphoto/css/prettyPhoto.css}" rel="stylesheet" />
+		
+		<!-- Bootstrap Extended -->
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap-responsive.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-wysihtml5/css/bootstrap-wysihtml5-0.0.2.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-select/bootstrap-select.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/extend/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+		
+		<!-- DateTimePicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/bootstrap-datetimepicker/css/datetimepicker.css}" rel="stylesheet" />
+		
+		<!-- JQueryUI -->
+		<link th:href="@{/common/theme/scripts/plugins/system/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.min.css}" rel="stylesheet" />
+		
+		<!-- MiniColors ColorPicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/color/jquery-miniColors/jquery.miniColors.css}" rel="stylesheet" />
+		
+		<!-- Notyfy Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/jquery.notyfy.css}" rel="stylesheet" />
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/themes/default.css}" rel="stylesheet" />
+		
+		<!-- Gritter Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/Gritter/css/jquery.gritter.css}" rel="stylesheet" />
+		
+		<!-- Easy-pie Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/charts/easy-pie/jquery.easy-pie-chart.css}" rel="stylesheet" />
+	
+		<!-- Google Code Prettify Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/other/google-code-prettify/prettify.css}" rel="stylesheet" />
+	
+		<!-- Main Theme Stylesheet :: CSS -->
+		<link th:href="@{/common/theme/css/style-dark.css?1369414383}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+		
+		<style type="text/css">
+			.hand{
+				cursor:pointer;
+			}
+			
+			#accountWindow input.error,#protocolWindow input.error {
+				border-color: #b94a48;
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+			}
+			
+			#accountWindow label.error,#protocolWindow label.error {
+			    background: #744646;
+			    display: inline-block;
+			    padding: 2px 4px;
+			    font-size: 11.844px;
+			    font-weight: bold;
+			    line-height: 14px;
+			    color: #ffffff;
+			    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+			    vertical-align: baseline;
+			    white-space: nowrap;
+			}
+			
+			#accountWindow p,#protocolWindow p {
+			    margin-top: 10px;
+			    line-height: normal;
+			}
+			
+			
+		</style>
+	</head>
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/resource/query')" class="glyphicons hdd"><i></i>设备管理</a></li>
+			<li class="divider"></li>
+			<li th:text="${resource.id eq 0 ? '添加设备' : '编辑设备'}">添加设备</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<!-- Form -->
+			<form th:object="${resource}" th:action="*{id eq 0 ? '/resource/insert' : '/resource/update'}" class="form-horizontal" style="margin-bottom: 0;" id="resourceForm" method="post" autocomplete="off">
+				<div class="widget">
+					<!-- Widget heading -->
+					<div class="widget-head">
+						<h4 class="heading">设备信息</h4>
+					</div>
+					<!-- // Widget heading END -->
+					<div class="widget-body">
+						<div class="row-fluid">
+							<!-- Column -->
+							<div class="span6">
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="name">设备名称</label>
+									<div class="controls">
+										<input class="span12" th:field="*{name}" type="text" placeholder="请输入名称"/>
+										<input th:if="*{id}" type="hidden" th:field="*{id}" />
+									</div>
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="ip">IP地址</label>
+									<div class="controls">
+										<input class="span12" th:field="*{ip}" type="text" placeholder="请输入IP地址"/>
+									</div>
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="type">设备类型</label>
+									<div class="controls">
+										<select style="width: 100%;" th:field="*{typeId}" class="span12">
+										</select>
+										<input type="hidden" id="type_id" th:value="${resource.typeId}" />
+									</div>
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="os">操作系统</label>
+									<div class="controls">
+										<select style="width: 100%;" th:field="*{osId}" class="span12">
+										</select>
+										<input type="hidden" id="os_id" th:value="${resource.osId}" />
+									</div>
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="status">设备状态</label>
+									<div class="controls">
+										<select class="selectpicker span12" th:field="*{status}">
+											<option th:if="*{status eq 0 ? 'selected=selected' : ''}" value="0">锁定</option>
+											<option th:if="*{status eq 1 ? 'selected=selected' : ''}" value="1">激活</option>
+										</select>
+									</div>
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="status">设备账号</label>
+									<div class="controls">
+										<div id="accountSelect" class="select2-container select2-container-multi" style="width:100%;">
+											<ul class="select2-choices" style="border-radius:4px;border-color: #D8D9DA;min-height: 30px;">
+												<!-- <li class="select2-search-choice"><div class="hand account">root</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+												<li class="select2-search-choice"><div class="hand account">nemo</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+												<li class="select2-search-choice"><div class="hand account">dev</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+												<li class="select2-search-choice"><div class="hand account">test</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+												<li class="select2-search-choice"><div class="hand account">mysql</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+												 -->
+												<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+													<img alt="" th:src="@{/images/icon/add_icon.png}" class="addAccSelect"/>
+												</li>
+												<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+													<img alt="" th:src="@{/images/icon/delete_icon.png}" class="delAccSelect"/>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<input type="hidden" name="accounts" th:value="${accounts}">
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="status">连接协议</label>
+									<div class="controls">
+										<div id="proSelect" class="select2-container select2-container-multi" style="width:100%;">
+											<ul class="select2-choices" style="border-radius:4px;border-color: #D8D9DA;min-height: 30px;">
+												<!-- <li class="select2-search-choice"><div>SSH</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+												<li class="select2-search-choice"><div>SFTP</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+												 -->
+												<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+													<img alt="" th:src="@{/images/icon/add_icon.png}" class="addProtocolSelect"/>
+												</li>
+												<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+													<img alt="" th:src="@{/images/icon/delete_icon.png}" class="delProtocolSelect"/>
+												</li>
+											</ul>
+										</div>
+										<input type="hidden" name="protocols" th:value="${protocols}" />
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<hr class="separator">
+						<div class="form-actions">
+							<button type="submit" id="subData" disabled="disabled" class="btn btn-success btn-icon glyphicons ok"><i></i>保&nbsp;存</button>
+							<button type="button" class="btn btn-icon btn-default glyphicons circle_remove" onclick="showMain('/resource/query')"><i></i>取&nbsp;消</button>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div id="accountWindow" class="modal hide fade" style="width: 332px;">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <h3>账号信息</h3>
+			  </div>
+			  <div class="modal-body">
+			  	<form id="accountForm" action="">
+			  		<div class="input-prepend" style="max-width: 332px;">
+					  	<span class="add-on">账号</span>
+					  	<input id="account" name="account" type="text" style="width: 260px;" placeholder="请输入账号" />
+					  	<!-- <p class="error help-block"><span class="label label-important">Please enter your firstname</span></p> -->
+					</div>
+					<div class="input-prepend">
+					  	<span class="add-on">密码</span>
+					  	<input id="accPassword" name="accPassword" type="password" style="width: 260px;" placeholder="请输入密码" />
+					</div>
+					<div class="input-prepend">
+					  	<span class="add-on">类型</span>
+					  	<select id="type" name="type" style="width: 273px;">
+		  					<option value="0">普通账号</option>
+		  					<option value="1">管理员</option>
+		  				</select>
+					</div>
+			  	</form>
+			  </div>
+			  <div class="modal-footer">
+			    <a href="#" class="btn btn-default">关闭</a>
+			    <a href="#" class="btn btn-primary">保存</a>
+			  </div>
+			</div>
+			<div id="protocolWindow" class="modal hide fade" style="width: 333px;">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <h3>协议信息</h3>
+			  </div>
+			  <div class="modal-body">
+			  	<div class="input-prepend">
+				  	<span class="add-on">协议</span>
+				  	<select id="protocol" style="width: 273px;">
+	  					<option value="SSH">SSH</option>
+	  					<option value="SFTP">SFTP</option>
+	  					<option value="RDP">RDP</option>
+	  				</select>
+				</div>
+				<div class="input-prepend">
+				  	<span class="add-on">端口</span>
+				  	<input type="text" id="port" style="width: 260px;"/>
+				</div>
+			  </div>
+			  <div class="modal-footer">
+			    <a href="#" class="btn btn-default">关闭</a>
+			    <a href="#" class="btn btn-primary">保存</a>
+			  </div>
+			</div>
+		</div>
+		<!-- Select2 Plugin -->
+		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				
+				
+				//设备名称及IP地址校验
+				$.validator.setDefaults(
+				{
+					submitHandler: function() { 
+						//alert("submitted!");
+						saveData();
+					},
+					showErrors: function(map, list) 
+					{
+						this.currentElements.parents('label:first, .controls:first').find('.error').remove();
+						this.currentElements.parents('.control-group:first').removeClass('error');
+						
+						$.each(list, function(index, error) 
+						{
+							var ee = $(error.element);
+							var eep = ee.parents('label:first').length ? ee.parents('label:first') : ee.parents('.controls:first');
+							
+							ee.parents('.control-group:first').addClass('error');
+							eep.find('.error').remove();
+							eep.append('<p class="error help-block"><span class="label label-important">' + error.message + '</span></p>');
+						});
+						//refreshScrollers();
+					}
+				});
+				$("#resourceForm").validate({
+					rules:{
+						name:{
+							required: true,
+							minlength: 1,
+							maxlength: 25,
+							checkName: true
+						},ip:{
+							required: true,
+							ip:true
+						}
+					},messages:{
+						name: {
+							required: "请输入名称",
+							minlength: "请输入至少1个字符组成的名称",
+							maxlength: "名称不能超过25个字",
+							checkName: "该设备名称重复，请重新输入"
+						},ip:{
+							required: "请输入IP地址",
+							ip:"IP地址不正确"
+						}
+					}
+				});
+				
+				jQuery.validator.addMethod("ip",function(value,element){
+					return this.optional(element) || /^((([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))[.]){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))$/.test(value);
+				});
+				
+				jQuery.validator.addMethod("checkName",function(value,element){
+					var flag = false;
+					if(value != ''){
+						$.ajax({
+							url:"/resource/checkName",
+							data:"resName=" + value,
+							dataType:"text",
+							async:false,
+							success:function(resId){
+								if(resId == 0 || resId == '0' || resId == $("#id").val()){
+									flag = true;
+								}
+							}
+						});
+					}
+					return flag;
+				});
+				
+				$.ajax({
+					url:'/resource/queryType',
+					type:'get',
+					async:false,
+					dataType:'json',
+					success:function(result){
+						var type_id = $("#type_id").val();
+						queryOs(type_id);
+						$.each(result,function(index,item){
+							if(item.id == type_id){
+								$("#typeId").append('<option value=' + item.id + ' selected=selected>' + item.name + '</option>');
+							}else{
+								$("#typeId").append('<option value=' + item.id + '>' + item.name + '</option>');
+							}
+						});
+						$("#typeId").select2();
+					}
+				});
+				$("#subData").removeAttr("disabled");
+				//账号操作
+				$(".removeAcc").live('click',function(){
+					$(this).parent().remove();
+					var account = $.trim($(this).prev().text());
+					var accounts = $("input[name='accounts']").val();
+					if(accounts == ''){
+						accounts = '[]';
+					}
+					accounts = eval(accounts);
+					for(var i = 0; i < accounts.length;i++){
+						if(accounts[i].account == account){
+							accounts.splice(i,1);
+							break;
+						}
+					}
+					$("input[name='accounts']").val(JSON.stringify(accounts));
+				});
+				
+				$('.delAccSelect').live('click',function(){
+					$(this).parent().prev().prevAll().remove();
+					$("input[name='accounts']").val("[]");
+				});
+				
+				$(".addAccSelect").on('click',function(){
+					$("#accountWindow").modal("show");
+					clearErr("accountWindow");
+					$("#account").val("");
+					$("#accPassword").val("");
+					$("#type option").eq(0).prop("selected","selected");
+				});
+				
+				$(".account").live('click',function(){
+					$("#accountWindow").modal("show");
+					clearErr("accountWindow");
+					var account = $.trim($(this).text());
+					var accounts = $("input[name='accounts']").val();
+					if(accounts == ''){
+						accounts = '[]';
+					}
+					accounts = eval(accounts);
+					for(var i = 0; i < accounts.length;i++){
+						if(accounts[i].account == account){
+							$("#account").val(accounts[i].account);
+							$("#accPassword").val(accounts[i].password);
+							$("#type option[value='" + accounts[i].type + "']").prop("selected","selected");
+							break;
+						}
+					}
+				});
+				
+				$("#accountWindow .btn-default").click(function(){
+					$("#accountWindow").modal("hide");
+				});
+				
+				$("#accountWindow .btn-primary").click(function(){
+					
+					var inputs = $("#accountWindow input");
+					for(var i = 0; i < inputs.length;i++){
+						if(inputs[i].id == "account"){
+							checkAcc(inputs[i]);
+						}else if(inputs[i].id == "accPassword"){
+							checkPass(inputs[i]);
+						}
+					}
+					
+					if($("#accountWindow .error").length > 0){
+						$("#accountWindow input.error").eq(0).focus();
+						return false;
+					}
+					
+					$("#accountWindow").modal("hide");
+					var accounts = $("input[name='accounts']").val();
+					if(accounts == ''){
+						accounts = '[]';
+					}
+					accounts = eval(accounts);
+					var account = $("#account").val();
+					var password = $("#accPassword").val();
+					var type = $("#type").val();
+					
+					var accObj = {'account':account,'password':password,'type':type};
+					
+					var accElement = "<li class=\"select2-search-choice\"><div class=\"hand account\">" + account + 
+					"</div><a href=\"#\" onclick=\"return false;\" class=\"select2-search-choice-close removeAcc\"" + 
+					"tabindex=\"-1\"></a></li>";
+					var accDiv = $("#accountSelect div");
+					var flag = true;
+					for(var i = 0; i < accDiv.length;i++){
+						if($.trim(accDiv.eq(i).text()) == account){
+							flag = false;
+							break;
+						}
+					}
+					if(flag){
+						$(".addAccSelect").parent().before(accElement);
+					}
+					flag = true;
+					for(var i = 0; i < accounts.length;i++){
+						if(accounts[i].account == account){
+							accounts[i].password = password;
+							accounts[i].type = type;
+							flag = false;
+							break;
+						}
+					}
+					if(flag){
+						accounts.push(accObj);
+					}
+					$("input[name='accounts']").val(JSON.stringify(accounts));
+				});
+				
+				//操作系统
+				$("#typeId").on('change',function(){
+					queryOs($(this).val());
+				});
+				
+				//连接协议
+				$(".delProtocolSelect").live('click',function(){
+					$(this).parent().prev().prevAll().remove();
+					$("input[name='protocols']").val("[]");
+				});
+				
+				$(".addProtocolSelect").on('click',function(){
+					$("#protocolWindow").modal("show");
+					$("#protocol option").eq(0).prop("selected","selected");
+					$("#port").val("22");
+				});
+				
+				$("#protocolWindow .btn-default").click(function(){
+					$("#protocolWindow").modal("hide");
+				});
+				
+				$("#protocolWindow .btn-primary").click(function(){
+					
+					var inputs = $("#protocolWindow input").val();
+					for(var i = 0;i < inputs.length; i++){
+						if(inputs[i].id == "port"){
+							checkPort(inputs[i]);
+						}
+					}
+					
+					if($("#protocolWindow .error").length > 0){
+						$("#protocolWindow input.error").eq(0).focus();
+						return false;
+					}
+					
+					$("#protocolWindow").modal("hide");
+					var protocol = $("#protocol").val();
+					var port = $("#port").val();
+					var proObj = {'protocol':protocol,'port':port};
+					var protocols = $("input[name='protocols']").val();
+					if(protocols == ''){
+						protocols = '[]';
+					}
+					protocols = eval(protocols);
+					
+					var proElement = "<li class=\"select2-search-choice\"><div class=\"hand protocol\">" + protocol +"</div><a href=\"#\" onclick=\"return false;\"" + 
+					"class=\"select2-search-choice-close removePro\" tabindex=\"-1\"></a></li>";
+					
+					var proDiv = $("#proSelect div");
+					var flag = true;
+					for(var i = 0; i < proDiv.length;i++){
+						if($.trim(proDiv.eq(i).text()) == protocol){
+							flag = false;
+							break;
+						}
+					}
+					if(flag){
+						$(".addProtocolSelect").parent().before(proElement);
+					}
+					flag = true;
+					for(var i = 0; i < protocols.length;i++){
+						if(protocols[i].protocol == protocol){
+							protocols[i].port = port;
+							flag = false;
+							break;
+						}
+					}
+					if(flag){
+						protocols.push(proObj);
+					}
+					$("input[name='protocols']").val(JSON.stringify(protocols));
+				});
+				
+				$(".removePro").live('click',function(){
+					$(this).parent().remove();
+					var protocol = $.trim($(this).prev().text());
+					var protocols = $("input[name='protocols']").val();
+					if(protocols == ''){
+						protocols = '[]';
+					}
+					protocols = eval(protocols);
+					for(var i = 0; i < protocols.length;i++){
+						if(protocols[i].protocol == protocol){
+							protocols.splice(i,1);
+							break;
+						}
+					}
+					$("input[name='protocols']").val(JSON.stringify(protocols));
+				});
+				
+				$(".protocol").live('click',function(){
+					$("#protocolWindow").modal("show");
+					var protocol = $.trim($(this).text());
+					var protocols = $("input[name='protocols']").val();
+					if(protocols == ''){
+						protocols = '[]';
+					}
+					protocols = eval(protocols);
+					for(var i = 0; i < protocols.length;i++){
+						if(protocols[i].protocol == protocol){
+							$("#port").val(protocols[i].port);
+							$("#protocol option[value='" + protocol + "']").prop("selected","selected");
+							break;
+						}
+					}
+				});
+				
+				$("#protocol").on('change',function(){
+					var protocol = $(this).val();
+					if(protocol == "SSH"){
+						$("#port").val("22");
+					}else if(protocol == "SFTP"){
+						$("#port").val("22");
+					}else if(protocol == "RDP"){
+						$("#port").val("3389");
+					}
+				});
+				
+				initProtocol();
+				initAccount();
+				
+			});
+			
+			function queryOs(typeId){
+				$.ajax({
+					url:'/resource/queryOs',
+					type:'get',
+					async:false,
+					data:'typeId=' + typeId,
+					dataType:'json',
+					success:function(result){
+						var os_id = $("#os_id").val();
+						$("#osId").find('option').remove();
+						$.each(result,function(index,item){
+							if(item.id == type_id){
+								$("#osId").append('<option value=' + item.id + ' selected=selected>' + item.name + '</option>');
+							}else{
+								$("#osId").append('<option value=' + item.id + '>' + item.name + '</option>');
+							}
+						});
+						$("#osId").select2();
+					}
+				});
+			}
+			
+			function err(obj,msg){
+				if(msg != ''){
+					$(obj).prop('class','error');
+					$(obj).next().remove();
+					$(obj).after('<p class="error help-block"><span class="label label-important">' + msg + '</span></p>');
+				}else{
+					$(obj).prop('class','');
+					$(obj).next().remove();
+				}
+			}
+			
+			//账号校验
+			$("#account").bind({click:function(){
+				checkAcc(this);
+			},change:function(){
+				checkAcc(this);
+			},keyup:function(){
+				checkAcc(this);
+			},blur:function(){
+				checkPass(this);
+			}});
+			
+			$("#accPassword").bind({click:function(){
+				checkPass(this);
+			},change:function(){
+				checkPass(this);
+			},keyup:function(){
+				checkPass(this);
+			},blur:function(){
+				checkPass(this);
+			}});
+			
+			function checkAcc(obj){
+				var account = $(obj).val();
+				var reg = /^(([A-Za-z0-9_]){1,20}|([A-Za-z0-9_]{1,20}[@]{1}[A-Za-z0-9-]{1,20}[.]{1}[A-Za-z]{1,10}))$/;
+				if(account == ''){
+					err($(obj),'请输入账号');
+				}else if(!reg.test(account)){
+					err($(obj),'请输入大小写字母、数字、下划线、横杠或邮件地址');
+				}else{
+					err($(obj),'');
+				}
+			}
+			
+			function checkPass(obj){
+				var password = $(obj).val();
+				if(password.length > 16){
+					err($(obj),'密码长度不能超过16个字符');
+				}else{
+					err($(obj),'');
+				}
+			}
+			
+			//端口校验
+			$("#port").bind({click:function(){
+				checkPort(this);
+			},change:function(){
+				checkPort(this);
+			},keyup:function(){
+				checkPort(this);
+			},blur:function(){
+				checkPort(this);
+			}});
+			
+			$("#port").bind({click:function(){
+				checkPort(this);
+			},change:function(){
+				checkPort(this);
+			},keyup:function(){
+				checkPort(this);
+			},blur:function(){
+				checkPort(this);
+			}});
+			
+			function checkPort(obj){
+				var port = $(obj).val();
+				var reg = /^[0-9]+$/;
+				if(port == ''){
+					err($(obj),'请输入端口号');
+				}else if(!reg.test(port)){
+					err($(obj),'请输入数字');
+				}else if(port < 0 || port > 65535){
+					err($(obj),'端口号不正确');
+				}else{
+					err($(obj),'');
+				}
+			}
+			
+			function clearErr(id){
+				$("#" + id + " input").prop("class","");
+				$("#" + id + " p.error").remove();
+			}
+			
+			function saveData(){
+				$.ajax({
+		             type: "POST",
+		             url: $("#resourceForm").prop("action"),
+		             data: $("#resourceForm").serialize(),
+		             success: function (result) {
+		            	 $("#content").html(result);
+		             }
+		    	 });
+			}
+			
+			//初始化协议
+			function initProtocol(){
+				var protocols = $("input[name='protocols']").val();
+				if(protocols == ''){
+					protocols = '[]';
+				}
+				protocols = eval(protocols);
+				for(var i = 0; i < protocols.length;i++){
+					var proElement = "<li class=\"select2-search-choice\"><div class=\"hand protocol\">" + protocols[i].protocol +"</div><a href=\"#\" onclick=\"return false;\"" + 
+					"class=\"select2-search-choice-close removePro\" tabindex=\"-1\"></a></li>";
+					$(".addProtocolSelect").parent().before(proElement);
+				}
+			}
+			
+			function initAccount(){
+				var accounts = $("input[name='accounts']").val();
+				if(accounts == ''){
+					accounts = '[]';
+				}
+				accounts = eval(accounts);
+				for(var index = 0; index < accounts.length; index++){
+					var accElement = "<li class=\"select2-search-choice\"><div class=\"hand account\">" + accounts[index].account + 
+					"</div><a href=\"#\" onclick=\"return false;\" class=\"select2-search-choice-close removeAcc\"" + 
+					"tabindex=\"-1\"></a></li>";
+					$(".addAccSelect").parent().before(accElement);
+				}
+			}
+		</script>
+	</body>
+</html>

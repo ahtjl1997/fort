@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="role">
+	<resultMap type="role" id="roleResult">
+		<result property="id" 				column="id" 				javaType="int"/>
+		<result property="name" 			column="name" 				javaType="java.lang.String"/>
+		<result property="memo" 			column="memo" 				javaType="java.lang.String"/>
+		<result property="createTime" 		column="create_time" 		javaType="java.util.Date"/>
+		<result property="updateTime" 		column="update_time" 		javaType="java.util.Date"/>
+		
+		<result property="newEmp" 			column="new_emp" 			javaType="int"/>
+		<result property="updateEmp" 		column="update_emp" 		javaType="int"/>
+		<result property="delEmp" 			column="del_emp" 			javaType="int"/>
+		<result property="viewEmp" 			column="view_emp" 			javaType="int"/>
+		<result property="importEmp" 		column="import_emp" 		javaType="int"/>
+		<result property="exportEmp" 		column="export_emp" 		javaType="int"/>
+		
+		<result property="newRole" 			column="new_role" 			javaType="int"/>
+		<result property="updateRole" 		column="update_role" 		javaType="int"/>
+		<result property="delRole" 			column="del_role" 			javaType="int"/>
+		<result property="viewRole" 		column="view_role" 			javaType="int"/>
+		
+		<result property="newEmpGroup" 		column="new_emp_group" 		javaType="int"/>
+		<result property="updateEmpGroup" 	column="update_emp_group" 	javaType="int"/>
+		<result property="delEmpGroup" 		column="del_emp_group" 		javaType="int"/>
+		<result property="viewEmpGroup" 	column="view_emp_group" 	javaType="int"/>
+		
+		<result property="newRes" 			column="new_res" 			javaType="int"/>
+		<result property="updateRes" 		column="update_res" 		javaType="int"/>
+		<result property="delRes" 			column="del_res" 			javaType="int"/>
+		<result property="viewRes" 			column="view_res" 			javaType="int"/>
+	</resultMap>
+	<!-- 根据角色名称查询角色信息 -->
+	<select id="queryByName" parameterType="java.lang.String" resultMap="roleResult">
+		<![CDATA[
+			SELECT * FROM `role` WHERE `name` = #{name}
+		]]>
+	</select>
+	<!-- 根据角色名称查询角色信息 -->
+	<select id="queryById" parameterType="int" resultMap="roleResult">
+		<![CDATA[
+			SELECT * FROM `role` WHERE `id` = #{id}
+		]]>
+	</select>
+	<!-- 自定义条件查询角色信息 -->
+	<select id="query" parameterType="java.util.HashMap" resultMap="roleResult">
+		<![CDATA[
+			SELECT * FROM `role` r
+		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					(r.`name` LIKE CONCAT('%',#{keyword},'%') OR r.memo LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+		</where>
+	</select>
+	<!-- 自定义条件统计角色总记录数 -->
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(r.id) FROM `role` r
+		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					(r.`name` LIKE CONCAT('%',#{keyword},'%') OR r.memo LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+		</where>
+	</select>
+	<!-- 新建角色信息 -->
+	<insert id="insert" parameterType="role">
+		<![CDATA[
+			INSERT INTO `role`
+            (
+             `name`,
+             `memo`,
+             `create_time`,
+             `new_emp`,
+             `update_emp`,
+             `del_emp`,
+             `view_emp`,
+             `import_emp`,
+             `export_emp`,
+             `new_role`,
+             `update_role`,
+             `del_role`,
+             `view_role`,
+             `new_emp_group`,
+             `update_emp_group`,
+             `del_emp_group`,
+             `view_emp_group`,
+             `new_res`,
+             `update_res`,
+             `del_res`,
+             `view_res`)
+			VALUES (
+			        #{name},
+			        #{memo},
+			        #{createTime},
+			        #{newEmp},
+			        #{updateEmp},
+			        #{delEmp},
+			        #{viewEmp},
+			        #{importEmp},
+			        #{exportEmp},
+			        #{newRole},
+			        #{updateRole},
+			        #{delRole},
+			        #{viewRole},
+			        #{newEmpGroup},
+			        #{updateEmpGroup},
+			        #{delEmpGroup},
+			        #{viewEmpGroup},
+			        #{newRes},
+			        #{updateRes},
+			        #{delRes},
+			        #{viewRes})
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<!-- 更新角色信息 -->
+	<update id="update" parameterType="role">
+		<![CDATA[
+			UPDATE `role` SET
+			  `name` = #{name},
+			  `memo` = #{memo},
+			  `update_time` = #{updateTime},
+			  `new_emp` = #{newEmp},
+			  `update_emp` = #{updateEmp},
+			  `del_emp` = #{delEmp},
+			  `view_emp` = #{viewEmp},
+			  `import_emp` = #{importEmp},
+			  `export_emp` = #{exportEmp},
+			  `new_role` = #{newRole},
+			  `update_role` = #{updateRole},
+			  `del_role` = #{delRole},
+			  `view_role` = #{viewRole},
+			  `new_emp_group` = #{newEmpGroup},
+			  `update_emp_group` = #{updateEmpGroup},
+			  `del_emp_group` = #{delEmpGroup},
+			  `view_emp_group` = #{viewEmpGroup},
+			  `new_res` = #{newRes},
+			  `update_res` = #{updateRes},
+			  `del_res` = #{delRes},
+			  `view_res` = #{viewRes}
+			WHERE `id` = #{id};
+		]]>
+	</update>
+	<!-- 删除角色 -->
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM `role` WHERE `id` = #{id}
+		]]>
+	</delete>
+</mapper>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="resource">
+	<resultMap type="resource" id="resourceResult">
+		<result property="id" 				column="id" 			javaType="int"/>
+		<result property="name" 			column="name" 			javaType="java.lang.String"/>
+		<result property="ip"	 			column="ip" 			javaType="java.lang.String"/>
+		<result property="typeId" 			column="type_id" 		javaType="java.lang.Integer"/>
+		<result property="typeName" 		column="type_name" 		javaType="java.lang.String"/>
+		<result property="osId" 			column="os_id" 			javaType="java.lang.Integer"/>
+		<result property="osName" 			column="os_name" 		javaType="java.lang.String"/>
+		<result property="useSsh" 			column="use_ssh" 		javaType="int"/>
+		<result property="sshPort" 			column="ssh_port" 		javaType="int"/>
+		<result property="useSftp" 			column="use_sftp" 		javaType="int"/>
+		<result property="sftpPort" 		column="sftp_port" 		javaType="int"/>
+		<result property="useRdp" 			column="use_rdp" 		javaType="int"/>
+		<result property="rdpPort" 			column="rdpPort" 		javaType="int"/>
+		<result property="status" 			column="status" 		javaType="int"/>
+		<result property="createTime" 		column="create_time" 	javaType="java.util.Date"/>
+		<result property="updateTime" 		column="update_time" 	javaType="java.util.Date"/>
+	</resultMap>
+	
+	<select id="query" parameterType="java.util.HashMap" resultMap="resourceResult">
+		<![CDATA[
+			SELECT
+			  r.`id`,
+			  r.`name`,
+			  r.`ip`,
+			  r.`type_id`,
+			  rt.`name` AS type_name,
+			  r.`os_id`,
+			  o.`name` AS os_name,
+			  r.`use_ssh`,
+			  r.`ssh_port`,
+			  r.`use_sftp`,
+			  r.`sftp_port`,
+			  r.`use_rdp`,
+			  r.`rdp_port`,
+			  r.`status`,
+			  r.`create_time`,
+			  r.`update_time`
+			FROM `resource` r LEFT JOIN res_type rt ON r.`type_id` = rt.`id` LEFT JOIN os o ON r.`os_id` = o.`id`
+		]]>
+		<where>
+			<if test="keyword != null and keyword != ''">
+				<![CDATA[
+					(r.name LIKE CONCAT('%',#{keyword},'%') OR r.ip LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+			<if test="status != null and status != -1">
+				<![CDATA[
+					AND r.status = #{status}
+				]]>
+			</if>
+			<if test="osId != null and osId != -1">
+				<![CDATA[
+					AND r.os_id = #{osId}
+				]]>
+			</if>
+			<if test="typeId != null and typeId != -1">
+				<![CDATA[
+					AND r.type_id = #{typeId}
+				]]>
+			</if>
+		</where>
+	</select>
+	
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT
+			  COUNT(r.`id`)
+			FROM `resource` r LEFT JOIN res_type rt ON r.`type_id` = rt.`id` LEFT JOIN os o ON r.`os_id` = o.`id`
+		]]>
+		<where>
+			<if test="keyword != null and keyword != ''">
+				<![CDATA[
+					(r.name LIKE CONCAT('%',#{keyword},'%') OR r.ip LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+			<if test="status != null and status != -1">
+				<![CDATA[
+					AND r.status = #{status}
+				]]>
+			</if>
+			<if test="osId != null and osId != -1">
+				<![CDATA[
+					AND r.os_id = #{osId}
+				]]>
+			</if>
+			<if test="typeId != null and typeId != -1">
+				<![CDATA[
+					AND r.type_id = #{typeId}
+				]]>
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryById" parameterType="int" resultMap="resourceResult">
+		<![CDATA[
+			SELECT
+			  r.`id`,
+			  r.`name`,
+			  r.`ip`,
+			  r.`type_id`,
+			  rt.`name` AS type_name,
+			  r.`os_id`,
+			  o.`name` AS os_name,
+			  r.`use_ssh`,
+			  r.`ssh_port`,
+			  r.`use_sftp`,
+			  r.`sftp_port`,
+			  r.`use_rdp`,
+			  r.`rdp_port`,
+			  r.`status`,
+			  r.`create_time`,
+			  r.`update_time`
+			FROM `resource` r LEFT JOIN res_type rt ON r.`type_id` = rt.`id` LEFT JOIN os o ON r.`os_id` = o.`id` 
+			WHERE r.id = #{id}
+		]]>
+	</select>
+	
+	<select id="queryByName" parameterType="java.lang.String" resultMap="resourceResult">
+		<![CDATA[
+			SELECT
+			  r.`id`,
+			  r.`name`,
+			  r.`ip`,
+			  r.`type_id`,
+			  rt.`name` AS type_name,
+			  r.`os_id`,
+			  o.`name` AS os_name,
+			  r.`use_ssh`,
+			  r.`ssh_port`,
+			  r.`use_sftp`,
+			  r.`sftp_port`,
+			  r.`use_rdp`,
+			  r.`rdp_port`,
+			  r.`status`,
+			  r.`create_time`,
+			  r.`update_time`
+			FROM `resource` r LEFT JOIN res_type rt ON r.`type_id` = rt.`id` LEFT JOIN os o ON r.`os_id` = o.`id` 
+			WHERE r.name = #{name}
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="resource">
+		<![CDATA[
+			INSERT INTO `resource`
+            (
+             `name`,
+             `ip`,
+             `type_id`,
+             `os_id`,
+             `use_ssh`,
+             `ssh_port`,
+             `use_sftp`,
+             `sftp_port`,
+             `use_rdp`,
+             `rdp_port`,
+             `status`,
+             `create_time`)
+			VALUES (
+			        #{name},
+			        #{ip},
+			        #{typeId},
+			        #{osId},
+			        #{useSsh},
+			        #{sshPort},
+			        #{useSftp},
+			        #{sftpPort},
+			        #{useRdp},
+			        #{rdpPort},
+			        #{status},
+			        #{createTime})
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="resource">
+		<![CDATA[
+			UPDATE `resource`
+			SET 
+			  `name` = #{name},
+			  `ip` = #{ip},
+			  `type_id` = #{typeId},
+			  `os_id` = #{osId},
+			  `use_ssh` = #{useSsh},
+			  `ssh_port` = #{sshPort},
+			  `use_sftp` = #{useSftp},
+			  `sftp_port` = #{sftpPort},
+			  `use_rdp` = #{useRdp},
+			  `rdp_port` = #{rdpPort},
+			  `status` = #{status},
+			  `update_time` = #{updateTime}
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM `resource` WHERE `id` = #{id}
+		]]>
+	</delete>
+	
+	<update id="updateStatus" parameterType="java.util.HashMap">
+		<![CDATA[
+			UPDATE `resource` SET `status` = #{status},`update_time` = #{updateTime} WHERE `id` = #{id}
+		]]>
+	</update>
+</mapper>

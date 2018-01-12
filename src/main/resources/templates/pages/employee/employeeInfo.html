@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="ie lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html class="ie lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="ie lt-ie9"> <![endif]-->
+<!--[if gt IE 8]> <html class="ie gt-ie8"> <![endif]-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		
+		<!-- Bootstrap -->
+		<link th:href="@{/common/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/css/responsive.css}" rel="stylesheet" />
+		
+		<!-- Glyphicons Font Icons -->
+		<link th:href="@{/common/theme/css/glyphicons.css}" rel="stylesheet" />
+		
+		<!-- Uniform Pretty Checkboxes -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/pixelmatrix-uniform/css/uniform.default.css}" rel="stylesheet" />
+		
+		<!-- PrettyPhoto -->
+	    <link th:href="@{/common/theme/scripts/plugins/gallery/prettyphoto/css/prettyPhoto.css}" rel="stylesheet" />
+		
+		<!-- Bootstrap Extended -->
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap-responsive.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-wysihtml5/css/bootstrap-wysihtml5-0.0.2.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-select/bootstrap-select.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/extend/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+		
+		<!-- DateTimePicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/bootstrap-datetimepicker/css/datetimepicker.css}" rel="stylesheet" />
+		
+		<!-- JQueryUI -->
+		<link th:href="@{/common/theme/scripts/plugins/system/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.min.css}" rel="stylesheet" />
+		
+		<!-- MiniColors ColorPicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/color/jquery-miniColors/jquery.miniColors.css}" rel="stylesheet" />
+		
+		<!-- Notyfy Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/jquery.notyfy.css}" rel="stylesheet" />
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/themes/default.css}" rel="stylesheet" />
+		
+		<!-- Gritter Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/Gritter/css/jquery.gritter.css}" rel="stylesheet" />
+		
+		<!-- Easy-pie Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/charts/easy-pie/jquery.easy-pie-chart.css}" rel="stylesheet" />
+	
+		<!-- Google Code Prettify Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/other/google-code-prettify/prettify.css}" rel="stylesheet" />
+	
+		<!-- Main Theme Stylesheet :: CSS -->
+		<link th:href="@{/common/theme/css/style-dark.css?1369414383}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+	</head>
+	
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/employee/query')" class="glyphicons user_add"><i></i>用户管理</a></li>
+			<li class="divider"></li>
+			<li th:text="${employee.id eq 0 ? '添加用户' : '编辑用户'}">添加用户</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<!-- Form -->
+			<form th:object="${employee}" th:action="*{id eq 0 ? '/employee/insert' : '/employee/update'}" class="form-horizontal" style="margin-bottom: 0;" id="employeeForm" method="post" autocomplete="off">
+				<div class="widget">
+					<!-- Widget heading -->
+					<div class="widget-head">
+						<h4 class="heading">用户信息</h4>
+					</div>
+					<!-- // Widget heading END -->
+					<div class="widget-body">
+						<div class="row-fluid">
+							<!-- Column -->
+							<div class="span6">
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="firstname">用户姓名</label>
+									<div class="controls">
+										<input class="span12" th:field="*{name}" type="text" placeholder="请输入姓名"/>
+										<input th:if="*{id}" type="hidden" th:field="*{id}" />
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="lastname">所属角色</label>
+									<div class="controls">
+										<div class="row-fluid">
+											<select style="width: 100%;" id="role_select" th:field="*{roleId}" th:disabled="*{username eq 'admin' ? 'disabled': 'false'}">
+								               <option th:each="r:${roleList}" th:value="${r.id}" th:text="${r.name}" 
+								               		th:selected="${r.id==employee.roleId ? 'selected' : 'false'}">
+								               </option>
+								        	</select>
+										</div>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="lastname">所属分组</label>
+									<div class="controls">
+										<div class="row-fluid">
+											<select style="width: 100%;" id="group_select" th:field="*{groupId}">
+								               <option th:each="g:${empGroupList}" th:value="${g.id}" th:text="${g.name}" 
+								               		th:selected="${g.id==employee.groupId ? 'selected' : 'false'}">
+								               </option>
+								        	</select>
+										</div>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="lastname">手机号码</label>
+									<div class="controls">
+										<input class="span12" th:field="*{mobile}" type="text" placeholder="请输入手机号码"/>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="lastname">邮件地址</label>
+									<div class="controls">
+										<input class="span12" th:field="*{email}" type="text"  placeholder="请输入邮件地址"/>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="username">密码期限</label>
+									<div class="controls">
+										<div class="input-append date span12" id="pwdTimeOut" data-date="" data-date-format="dd-mm-yyyy">
+										    <input class="span2" name="timeOut" style="width: 100%;" readonly="readonly" type="text" th:value="*{pwdTimeOut==null ? '' : #dates.format(pwdTimeOut,'yyyy-MM-dd')}" placeholder="请输选择密码期限">
+										    <span class="add-on"><i class="icon-remove" style="margin-top: 4px;"></i></span>
+										    <span class="add-on"><i class="icon-th" style="margin-top: 4px;"></i></span>
+										</div>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="lastname">工作时间</label>
+									<div class="controls">
+										<div class="row-fluid">
+											<select class="span6" th:field="*{startWeek}">
+								               <option value="0" th:if="${startWeek eq 0 ? 'selected' : ''}">起始时间：周一</option>
+								               <option value="1" th:if="${startWeek eq 1 ? 'selected' : ''}">起始时间：周二</option>
+								               <option value="2" th:if="${startWeek eq 2 ? 'selected' : ''}">起始时间：周三</option>
+								               <option value="3" th:if="${startWeek eq 3 ? 'selected' : ''}">起始时间：周四</option>
+								               <option value="4" th:if="${startWeek eq 4 ? 'selected' : ''}">起始时间：周五</option>
+								               <option value="5" th:if="${startWeek eq 5 ? 'selected' : ''}">起始时间：周六</option>
+								               <option value="6" th:if="${startWeek eq 6 ? 'selected' : ''}">起始时间：周日</option>
+								        	</select>
+								        	<select th:field="*{endWeek}" class="span6">
+								               <option value="0" th:if="${startWeek eq 0 ? 'selected' : ''}">结束时间：周一</option>
+								               <option value="1" th:if="${startWeek eq 1 ? 'selected' : ''}">结束时间：周二</option>
+								               <option value="2" th:if="${startWeek eq 2 ? 'selected' : ''}">结束时间：周三</option>
+								               <option value="3" th:if="${startWeek eq 3 ? 'selected' : ''}">结束时间：周四</option>
+								               <option value="4" th:if="${startWeek eq 4 ? 'selected' : ''}">结束时间：周五</option>
+								               <option value="5" th:if="${startWeek eq 5 ? 'selected' : ''}">结束时间：周六</option>
+								               <option value="6" th:if="${startWeek eq 6 ? 'selected' : ''}">结束时间：周日</option>
+								        	</select>
+										</div>
+									</div>
+								</div>
+								<!-- // Group END -->
+							</div>
+							<!-- Column -->
+							<div class="span6">
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="lastname">用户账号</label>
+									<div class="controls">
+										<input class="span12" th:field="*{username}" th:readonly="*{id eq 0 ? 'false' : 'readonly'}" type="text" placeholder="请输入账号"/>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="username">用户状态</label>
+									<div class="controls">
+										<select class="span12" th:field="*{status}" th:disabled="*{username eq 'admin' ? 'disabled' : 'false'}">
+											<option th:if="*{status eq 0 ? 'selected=selected' : ''}" value="0">锁定</option>
+											<option th:if="*{status eq 1 ? 'selected=selected' : ''}" value="1">激活</option>
+										</select>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="username">认证方式</label>
+									<div class="controls">
+										<select class="span12">
+											<option>密码认证</option>
+											<option>Google动态令牌</option>
+										</select>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="password">登录密码</label>
+									<div class="controls">
+										<input type="hidden" name="password" id="password" value=""/>
+										<input class="span12" name="pwd" id="pwd" type="password" placeholder="请输入登录密码"/>
+									</div>
+								</div>
+								<!-- // Group END -->
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="checkPwd">确认密码</label>
+									<div class="controls">
+										<input class="span12" name="pwd2" id="pwd2" type="password" placeholder="请输入确认密码"/>
+									</div>
+								</div>
+								<!-- // Group END -->
+							</div>
+						</div>
+						<hr class="separator">
+						<div class="form-actions">
+							<button type="submit" id="subData" disabled="disabled" class="btn btn-success btn-icon glyphicons ok"><i></i>保&nbsp;存</button>
+							<button type="button" class="btn btn-icon btn-default glyphicons circle_remove" onclick="showMain('/employee/query')"><i></i>取&nbsp;消</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- Select2 Plugin -->
+		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
+		
+		<script type="text/javascript">
+			
+			$(document).ready(function(){
+				$('#role_select').select2();
+				$("#group_select").select2();
+				// meridian
+				$('#pwdTimeOut').datetimepicker({
+					language: 'zh-CN',
+					format: "yyyy-mm-dd",
+				    showMeridian: true,
+				    autoclose: true,
+				    startDate: "2017-09-01",
+				    todayBtn: true,
+				    startView: 2,
+				    minView: 2,
+				    clearBtn: true
+				});
+				$("#subData").removeAttr("disabled");
+				$("#pwd").change(function(){
+					$("#password").val($(this).val());
+				});
+			});
+			$.validator.setDefaults(
+			{
+				submitHandler: function() { 
+					//alert("submitted!");
+					saveData();
+				},
+				showErrors: function(map, list) 
+				{
+					this.currentElements.parents('label:first, .controls:first').find('.error').remove();
+					this.currentElements.parents('.control-group:first').removeClass('error');
+					
+					$.each(list, function(index, error) 
+					{
+						var ee = $(error.element);
+						var eep = ee.parents('label:first').length ? ee.parents('label:first') : ee.parents('.controls:first');
+						
+						ee.parents('.control-group:first').addClass('error');
+						eep.find('.error').remove();
+						eep.append('<p class="error help-block"><span class="label label-important">' + error.message + '</span></p>');
+					});
+					//refreshScrollers();
+				}
+			});
+			
+			jQuery.validator.addMethod("mobile",function(value,element){
+				return this.optional(element) || /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(value);
+			});
+			
+			jQuery.validator.addMethod("username",function(value,element){
+				return this.optional(element) || /^[A-Za-z0-9\_]+$/.test(value) ||
+				/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
+			});
+			
+			jQuery.validator.addMethod("checkName",function(value,element){
+				var flag = false;
+				if(value != ''){
+					$.ajax({
+						url:"/employee/checkName",
+						data:"userName=" + value,
+						dataType:"text",
+						async:false,
+						success:function(empId){
+							if(empId == 0 || empId == '0' || empId == $("#id").val()){
+								flag = true;
+							}
+						}
+					});
+				}
+				return flag;
+			});
+			
+			jQuery.validator.addMethod("pwd",function(value,element){
+				if($("#id").val() == undefined && value == ''){
+					return false;
+				}
+				return value == '' || (value.length > 5 && value.length < 17);
+			});
+			
+			$("#employeeForm").validate({
+				rules: {
+					name: {
+						required: true,
+						minlength: 2,
+						maxlength: 25
+					},
+					username: {
+						required: true,
+						minlength: 2,
+						maxlength: 25,
+						username: true,
+						checkName: true
+					},
+					pwd: {
+						pwd: true
+					},
+					pwd2: {
+						equalTo: "#pwd"
+					},
+					mobile : {
+						required: false,
+						mobile: true
+					},
+					email : {
+						required: false,
+						email: true,
+						maxlength: 50
+					}
+				},messages: {
+					name: {
+						required: "请输入姓名",
+						minlength: "请输入至少两个字符组成的姓名",
+						maxlength: "名字不能超过25个字"
+					},
+					username: {
+						required: "请输入账号",
+						minlength: "请输入至少两个字符组成的账号",
+						maxlength: "账号不能超过25个字",
+						username: "请输入由数字、字母、下划线组成的账号或电子邮件",
+						checkName: "账号信息重复，请重新输入"
+					},
+					pwd: {
+						pwd: "请输入6到16个字符组成的密码"
+					},
+					pwd2: {
+						equalTo: "两次输入的密码不一致，请重新输入"
+					},
+					mobile: {
+						mobile: "请输入正确的手机号码"
+					},
+					email: {
+						email: "请输入正确的邮件地址",
+						maxlength: "邮件长度不能超过50个字符"
+					}
+				}
+			});
+			
+			function saveData(){
+				$.ajax({
+		             type: "POST",
+		             url: $("#employeeForm").prop("action"),
+		             data: $("#employeeForm").serialize(),
+		             success: function (result) {
+		            	 $("#content").html(result);
+		             }
+		    	 });
+			}
+		</script>
+	</body>
+</html>

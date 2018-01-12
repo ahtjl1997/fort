@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="account">
+	<resultMap type="account" id="accountResult">
+		<result property="id" 				column="id" 			javaType="int"/>
+		<result property="name" 			column="name" 			javaType="java.lang.String"/>
+		<result property="password" 		column="password" 		javaType="java.lang.String"/>
+		<result property="resId" 			column="res_id" 		javaType="java.lang.Integer"/>
+		<result property="type" 			column="type" 			javaType="int"/>
+	</resultMap>
+	<select id="queryByResId" parameterType="int" resultMap="accountResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `password`,
+			  `res_id`,
+			  `type`
+			FROM `account` WHERE res_id = #{resId}
+		]]>
+	</select>
+	<select id="queryById" parameterType="int" resultMap="accountResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `password`,
+			  `res_id`,
+			  `type`
+			FROM `account` WHERE id = #{id}
+		]]>
+	</select>
+	<insert id="insert" parameterType="account">
+		<![CDATA[
+			INSERT INTO `account`
+            (
+             `name`,
+             `password`,
+             `res_id`,
+             `type`)
+			VALUES (
+			        #{name},
+			        #{password},
+			        #{resId},
+			        #{type})
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<update id="update" parameterType="account">
+		<![CDATA[
+			UPDATE `account`
+			SET 
+			  `name` = #{name},
+			  `password` = #{password},
+			  `type` = #{type}
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM `account` WHERE `id` = #{id}
+		]]>
+	</delete>
+</mapper>

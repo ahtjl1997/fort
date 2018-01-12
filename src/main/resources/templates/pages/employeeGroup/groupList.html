@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		<!-- Select2 Plugin -->
+		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
+	</head>
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/employeeGroup/query')" class="glyphicons user_add"><i></i>分组信息</a></li>
+			<li class="divider"></li>
+			<li>分组列表</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<div class="widget">
+				<!-- Widget heading -->
+				<div class="widget-head">
+					<h4 class="heading">分组列表</h4>
+				</div>
+				<!-- // Widget heading END -->
+				<div class="widget-body">
+					<div class="row-fluid">
+						<div class="span12">
+							<form th:action="@{/employeeGroup/query}" method="post">
+								<!-- Table -->
+								<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline" role="grid">
+									<div class="row-fluid">
+										<div class="span8">
+											<div id="DataTables_Table_0_length" class="dataTables_length">
+												<label>
+													<input type="text" name="paramQuery" th:value="${paramQuery}" aria-controls="DataTables_Table_0" style="margin-right: 5px;" placeholder="请输入查询条件">
+													<a href="#" onclick="query()" class="glyphicons no-js search" style="margin-top: 2px;"><i></i></a>
+													&nbsp;
+													<select id="role_select" style="width: 200px;" name="roleId">
+														<option th:each="r:${roleList}" th:selected="${roleId eq r.id ? 'selected' : 'false'}" th:value="${r.id}" th:text="${r.name}"></option>
+													</select>
+												</label>
+											</div>
+										</div>
+										<div class="span4">
+											<div class="dataTables_filter" id="DataTables_Table_0_filter">
+												<label>
+													<a href="#" title="添加" class="glyphicons no-js circle_plus" onclick="showMain('/employeeGroup/insertPage')"><i></i></a>&nbsp;
+													<a href="#" title="删除" class="glyphicons no-js circle_remove" onclick="dels()"><i></i></a>&nbsp;
+												</label>
+											</div>
+										</div>
+									</div>
+									<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+										<!-- Table heading -->
+										<thead>
+											<tr role="row">
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 10px;">
+												  <div >
+													<input type="checkbox" class="checkbox" id="checkAll" style="width: 18px;" />
+												  </div>
+												</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 200px;">分组名称</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">描述信息</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 200px;">所属角色</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 150px;">创建时间</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width:80px;">操作</th>
+											</tr>
+										</thead>
+										<!-- // Table heading END -->
+										<!-- Table body -->
+										<tbody role="alert" aria-live="polite" aria-relevant="all">
+											<tr class="gradeA odd" th:if="${#lists.isEmpty(list)}">
+												<td colspan="6" style="text-align: center;">没有查询到匹配的信息</td>
+											</tr>
+											<tr class="gradeA odd" th:each="g:${list}">
+												<td class="">
+													<input type="checkbox" class="checkbox" th:id="${'id_' + g.id}" name="ids" style="width: 18px;background-color: #FFF;" th:value="${g.id}" />
+												</td>
+												<td class="" th:text="${g.name}"></td>
+												<td class="" th:text="${g.memo}"></td>
+												<td class="" th:text="${g.roleName}"></td>
+												<td class="" th:text="${g.createTime==null ? '' : #dates.format(g.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+												<td class="">
+													<a href="#" title="编辑" class="glyphicons no-js pencil" th:onclick="'showMain(\'/employeeGroup/edit?id=' + ${g.id} + '\')'"><i></i></a>
+													<a href="#" title="删除" class="glyphicons no-js circle_remove" th:onclick="'del(' + ${g.id} + ')'"><i></i></a>
+												</td>
+											</tr>
+										</tbody>
+										<!-- // Table body END -->
+									</table>
+									<div class="row-fluid">
+										<div th:include="pages/commons/page :: page"></div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#role_select").select2();
+				$("#role_select").change(function(){
+					query();
+				});
+				$("input[name='paramQuery']").keypress(function(event){
+					if(event.keyCode == 13){
+						query();
+					}
+				});
+				$("#checkAll").click(function(){
+					if($(this).prop("checked")){
+						$("input[name='ids']").prop("checked",true);
+					}else{
+						$("input[name='ids']").prop("checked",false);
+					}
+				});
+			});
+			
+			function del(id){
+				bootbox.setLocale('cn');
+				bootbox.confirm("确定删除该用户组吗?", function(result) 
+				{
+					if(result){
+						showMain('/employeeGroup/delete?id=' + id);
+					}
+				});
+			}
+			
+			function dels(){
+				if($("input[name='ids']:checked").length == 0){
+					bootbox.setLocale('cn');
+					bootbox.alert("请选择要删除的用户组！", function(result) 
+					{
+						
+					});
+				}else{
+					var ids = "";
+					$("input[name='ids']:checked").each(function(index,item){
+						if(index > 0){
+							ids += ',';
+						}
+						ids += item.value;
+					});
+					bootbox.setLocale('cn');
+					bootbox.confirm("确定删除已选择的用户组吗？", function(result) 
+					{
+						if(result){
+							showMain('/employeeGroup/deletes?ids=' + ids);
+						}
+					});
+				}
+			}
+		</script>
+	</body>
+</html>

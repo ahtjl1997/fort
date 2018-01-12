@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+	<!-- 用户信息 -->
+	<resultMap type="employee" id="employeeResult">
+		<result property="id" 			column="id" 			javaType="int"/>
+		<result property="name" 		column="name" 			javaType="java.lang.String"/>
+		<result property="username" 	column="login_name" 	javaType="java.lang.String"/>
+		<result property="password" 	column="password" 		javaType="java.lang.String"/>
+		<result property="memo" 		column="memo" 			javaType="java.lang.String"/>
+		<result property="mobile" 		column="mobile" 		javaType="java.lang.String"/>
+		<result property="tel" 			column="tel" 			javaType="java.lang.String"/>
+		<result property="organization" column="organization" 	javaType="java.lang.String"/>
+		<result property="email" 		column="email" 			javaType="java.lang.String"/>
+		<result property="updatePwd" 	column="update_pwd" 	javaType="int"/>
+		<result property="authType" 	column="auth_type" 		javaType="int"/>
+		<result property="status" 		column="status" 		javaType="int"/>
+		<result property="startWeek" 	column="start_week" 	javaType="int"/>
+		<result property="endWeek" 		column="end_week" 		javaType="int"/>
+		<result property="pwdTimeOut" 	column="pwd_timeout" 	javaType="java.util.Date"/>
+		<result property="createTime" 	column="create_time" 	javaType="java.util.Date"/>
+		<result property="updateTime" 	column="update_time" 	javaType="java.util.Date"/>
+		<result property="roleId"		column="role_id"		javaType="int"/>
+		<result property="groupId"		column="group_id"		javaType="int"/>
+		<result property="roleName" 	column="role_name" 		javaType="java.lang.String"/>
+		<result property="groupName" 	column="group_name" 	javaType="java.lang.String"/>
+	</resultMap>
+	<!-- 角色信息 -->
+	<resultMap type="role" id="roleResult">
+		<result property="newEmp" 			column="new_emp" 			javaType="int"/>
+		<result property="updateEmp" 		column="update_emp" 		javaType="int"/>
+		<result property="delEmp" 			column="del_emp" 			javaType="int"/>
+		<result property="viewEmp" 			column="view_emp" 			javaType="int"/>
+		<result property="importEmp" 		column="import_emp" 		javaType="int"/>
+		<result property="exportEmp" 		column="export_emp" 		javaType="int"/>
+		
+		<result property="newRole" 			column="new_role" 			javaType="int"/>
+		<result property="updateRole" 		column="update_role" 		javaType="int"/>
+		<result property="delRole" 			column="del_role" 			javaType="int"/>
+		<result property="viewRole" 		column="view_role" 			javaType="int"/>
+		
+		<result property="newEmpGroup" 		column="new_emp_group" 		javaType="int"/>
+		<result property="updateEmpGroup" 	column="update_emp_group" 	javaType="int"/>
+		<result property="delEmpGroup" 		column="del_emp_group" 		javaType="int"/>
+		<result property="viewEmpGroup" 	column="view_emp_group" 	javaType="int"/>
+		
+		<result property="newRes" 			column="new_res" 			javaType="int"/>
+		<result property="updateRes" 		column="update_res" 		javaType="int"/>
+		<result property="delRes" 			column="del_res" 			javaType="int"/>
+		<result property="viewRes" 			column="view_res" 			javaType="int"/>
+	</resultMap>
+	<!-- 用户登录 -->
+	<select id="login" parameterType="java.util.HashMap" resultMap="employeeResult">
+		<![CDATA[
+			SELECT
+			  e.`id`,
+			  e.`name`,
+			  e.`login_name`,
+			  e.`create_time`,
+			  e.`update_time`,
+			  e.`memo`,
+			  e.`mobile`,
+			  e.`tel`,
+			  e.`email`,
+			  e.`organization`,
+			  e.`update_pwd`,
+			  e.`auth_type`,
+			  e.`status`,
+			  e.`start_week`,
+			  e.`end_week`,
+			  e.`pwd_timeout`,
+			  e.`role_id`,
+			  e.`group_id`,
+			  r.`name` AS role_name,
+			  eg.`name` AS group_name
+			FROM `employee` e LEFT JOIN `role` r ON e.role_id = r.id LEFT JOIN `employee_group` eg ON e.group_id = eg.id WHERE e.login_name = #{loginName} AND e.password = #{password}
+		]]>
+	</select>
+	<!-- 根据用户ID查询权限信息 -->
+	<select id="queryRole" parameterType="int" resultMap="roleResult">
+		<![CDATA[
+			SELECT 
+			    MAX(rl.`new_emp`) AS `new_emp`,
+			    MAX(rl.`update_emp`) AS `update_emp`,
+			    MAX(rl.`del_emp`) AS `del_emp`,
+			    MAX(rl.`view_emp`) AS `view_emp`,
+			    MAX(rl.`import_emp`) AS `import_emp`,
+			    MAX(rl.`export_emp`) AS `export_emp`,
+			    MAX(rl.`new_role`) AS `new_role`,
+			    MAX(rl.`update_role`) AS `update_role`,
+			    MAX(rl.`del_role`) AS `del_role`,
+			    MAX(rl.`view_role`) AS `view_role`,
+			    MAX(rl.`new_emp_group`) AS `new_emp_group`,
+			    MAX(rl.`update_emp_group`) AS `update_emp_group`,
+			    MAX(rl.`del_emp_group`) AS `del_emp_group`,
+			    MAX(rl.`view_emp_group`) AS `view_emp_group`,
+			    MAX(rl.`new_res`) AS `new_res`,
+			    MAX(rl.`update_res`) AS `update_res`,
+			    MAX(rl.`del_res`) AS `del_res`,
+			    MAX(rl.`view_res`) AS `view_res`
+			FROM (
+				SELECT
+				  r.`new_emp`,
+				  r.`update_emp`,
+				  r.`del_emp`,
+				  r.`view_emp`,
+				  r.`import_emp`,
+				  r.`export_emp`,
+				  r.`new_role`,
+				  r.`update_role`,
+				  r.`del_role`,
+				  r.`view_role`,
+				  r.`new_emp_group`,
+				  r.`update_emp_group`,
+				  r.`del_emp_group`,
+				  r.`view_emp_group`,
+				  r.`new_res`,
+				  r.`update_res`,
+				  r.`del_res`,
+				  r.`view_res`
+				FROM `role` r,`employee` e WHERE r.`id` = e.`role_id` AND e.`id` = #{empId}
+				
+				UNION ALL 
+				
+				SELECT
+				  r.`new_emp`,
+				  r.`update_emp`,
+				  r.`del_emp`,
+				  r.`view_emp`,
+				  r.`import_emp`,
+				  r.`export_emp`,
+				  r.`new_role`,
+				  r.`update_role`,
+				  r.`del_role`,
+				  r.`view_role`,
+				  r.`new_emp_group`,
+				  r.`update_emp_group`,
+				  r.`del_emp_group`,
+				  r.`view_emp_group`,
+				  r.`new_res`,
+				  r.`update_res`,
+				  r.`del_res`,
+				  r.`view_res`
+				FROM `role` r,`employee_group` eg,employee e WHERE r.`id` = eg.`role_id` AND eg.`id` = e.`group_id` AND e.`id` = #{empId}
+			) rl
+		]]>
+	</select>
+</mapper>

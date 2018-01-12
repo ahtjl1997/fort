@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employeeGroup">
+	<resultMap type="employeeGroup" id="groupResult">
+		<result property="id" 				column="id" 			javaType="int"/>
+		<result property="name" 			column="name" 			javaType="java.lang.String"/>
+		<result property="memo" 			column="memo" 			javaType="java.lang.String"/>
+		<result property="createTime" 		column="create_time" 	javaType="java.util.Date"/>
+		<result property="updateTime" 		column="update_time" 	javaType="java.util.Date"/>
+		<result property="roleId"			column="role_id"		javaType="int"/>
+		<result property="roleName" 		column="role_name" 		javaType="java.lang.String"/>
+	</resultMap>
+	<!-- 根据分组名称查询分组信息 -->
+	<select id="queryByName" parameterType="java.lang.String" resultMap="groupResult">
+		<![CDATA[
+			SELECT
+			  eg.`id`,
+			  eg.`name`,
+			  eg.`memo`,
+			  eg.`create_time`,
+			  eg.`update_time`,
+			  eg.`role_id`,
+			  r.name AS role_name
+			FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id WHERE eg.`name` = #{name}
+		]]>
+	</select>
+	<!-- 根据分组ID查询分组信息 -->
+	<select id="queryById" parameterType="int" resultMap="groupResult">
+		<![CDATA[
+			SELECT
+			  eg.`id`,
+			  eg.`name`,
+			  eg.`memo`,
+			  eg.`create_time`,
+			  eg.`update_time`,
+			  eg.`role_id`,
+			  r.name AS role_name
+			FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id WHERE eg.`id` = #{id}
+		]]>
+	</select>
+	<!-- 自定义条件查询分组信息 -->
+	<select id="query" parameterType="java.util.HashMap" resultMap="groupResult">
+		<![CDATA[
+			SELECT
+			  eg.`id`,
+			  eg.`name`,
+			  eg.`memo`,
+			  eg.`create_time`,
+			  eg.`update_time`,
+			  eg.`role_id`,
+			  r.name AS role_name
+			FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id
+		]]>
+		<where>
+			<if test="roleId != 0 and roleId != '' and roleId != null">
+				<![CDATA[
+					eg.`role_id` = #{roleId}
+				]]>
+			</if>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR eg.`memo` LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+		</where>
+	</select>
+	<!-- 自定义条件统计分组总记录数 -->
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(eg.`id`) FROM `employee_group` eg
+		]]>
+		<where>
+			<if test="roleId != 0 and roleId != '' and roleId != null">
+				<![CDATA[
+					eg.`role_id` = #{roleId}
+				]]>
+			</if>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR eg.`memo` LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="employeeGroup">
+		<![CDATA[
+			INSERT INTO `employee_group`
+            (
+             `name`,
+             `memo`,
+             `create_time`
+        ]]>
+        <if test="roleId != 0">
+        	<![CDATA[
+        	 	,`role_id`
+        	]]>
+        </if>
+        <![CDATA[
+			)VALUES (
+			        #{name},
+			        #{memo},
+			        #{createTime}
+		]]>
+		<if test="roleId != 0">
+        	<![CDATA[
+        	 	,#{roleId}
+        	]]>
+        </if>
+        <![CDATA[
+        	 )
+       	]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<!-- 更新分组信息 -->
+	<update id="update" parameterType="employeeGroup">
+		<![CDATA[
+			UPDATE `employee_group` SET 
+			  `name` = #{name},
+			  `memo` = #{memo},
+			  `update_time` = #{updateTime}
+		]]>
+		<if test="roleId != 0">
+			<![CDATA[
+				,`role_id` = #{roleId}
+			]]>
+		</if>
+		<if test="roleId == 0">
+			<![CDATA[
+				,`role_id` = NULL
+			]]>
+		</if>
+		<![CDATA[
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	<!-- 删除分组信息 -->
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM `employee_group` WHERE `id` = #{id}
+		]]>
+	</delete>
+</mapper>
