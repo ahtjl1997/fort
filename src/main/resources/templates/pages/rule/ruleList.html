@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		<!-- Select2 Plugin -->
+		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
+	</head>
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/rule/query')" class="glyphicons hdd"><i></i>运维授权</a></li>
+			<li class="divider"></li>
+			<li>授权列表</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<div class="widget">
+				<!-- Widget heading -->
+				<div class="widget-head">
+					<h4 class="heading">授权列表</h4>
+				</div>
+				<!-- // Widget heading END -->
+				<div class="widget-body">
+					<div class="row-fluid">
+						<div class="span12">
+							<form th:action="@{/rule/query}" method="post">
+								<!-- Table -->
+								<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline" role="grid">
+									<div class="row-fluid">
+										<div class="span8">
+											<div id="DataTables_Table_0_length" class="dataTables_length">
+												<label>
+													<input type="text" name="paramQuery" th:value="${paramQuery}" aria-controls="DataTables_Table_0" style="margin-right: 5px;" placeholder="请输入查询条件">
+													<a onclick="query()" href="#" class="glyphicons no-js search" style="margin-top: 2px;"><i></i></a>
+													&nbsp;&nbsp;
+													<select name="status" style="width: 130px;">
+														<option th:selected="${status == -1 ? 'selected' : false}" value="-1">请选择状态</option>
+														<option th:selected="${status == 1 ? 'selected' : false}" value="1">激活</option>
+														<option th:selected="${status == 0 ? 'selected' : false}" value="0">锁定</option>
+													</select>
+												</label>
+											</div>
+										</div>
+										<div class="span4">
+											<div class="dataTables_filter" id="DataTables_Table_0_filter">
+												<label>
+													<a href="#" title="激活" class="glyphicons no-js unlock" onclick="statuss('1')"><i></i></a>&nbsp;
+													<a href="#" title="锁定" class="glyphicons no-js lock" onclick="statuss('0')"><i></i></a>&nbsp;
+													<a href="#" title="添加" class="glyphicons no-js circle_plus" onclick="showMain('/rule/insertPage')"><i></i></a>&nbsp;
+													<a href="#" title="删除" class="glyphicons no-js circle_remove" onclick="dels()"><i></i></a>&nbsp;
+												</label>
+											</div>
+										</div>
+									</div>
+									<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+										<!-- Table heading -->
+										<thead>
+											<tr role="row">
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 10px;">
+												  <div >
+													<input type="checkbox" class="checkbox" id="checkAll" style="width: 18px;"/>
+												  </div>
+												</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">授权名称</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">描述信息</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">授权状态</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">创建时间</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width:100px;">操作</th>
+											</tr>
+										</thead>
+										<!-- // Table heading END -->
+										<!-- Table body -->
+										
+										<tbody role="alert" aria-live="polite" aria-relevant="all">
+											<tr class="gradeA odd" th:if="${#lists.isEmpty(list)}">
+												<td colspan="6" style="text-align: center;">没有查询到匹配的信息</td>
+											</tr>
+											<tr class="gradeA odd" th:each="r:${list}">
+												<td class="">
+													<input type="checkbox" class="checkbox" th:id="${'id_' + r.id}" name="ids" style="width: 18px;background-color: #FFF;" th:value="${r.id}" />
+												</td>
+												<td class="" th:text="${r.name}"></td>
+												<td class="" th:text="${r.memo}"></td>
+												<td class="" >
+													<a th:if="${r.status==1}" href="#" title="激活" class="glyphicons no-js ok_2"><i></i></a>
+													<a th:if="${r.status==0}" href="#" title="锁定" class="glyphicons no-js remove_2"><i></i></a>
+												</td>
+												<td class="" th:text="${r.createTime==null ? '' : #dates.format(r.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+												<td class="">
+													<a th:if="${r.status==0}" href="#" title="激活" th:onclick="'status(\'' + ${r.id} + '\',\'1\')'" class="glyphicons no-js unlock"><i></i></a>
+													<a th:if="${r.status==1}" href="#" title="锁定" th:onclick="'status(\'' + ${r.id} + '\',\'0\')'" class="glyphicons no-js lock"><i></i></a>
+													<a href="#" title="编辑" class="glyphicons no-js pencil" th:onclick="'showMain(\'/rule/edit?id=' + ${r.id} + '\')'"><i></i></a>
+													<a href="#" title="删除" class="glyphicons no-js circle_remove" th:onclick="'del(' + ${r.id} + ')'"><i></i></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="row-fluid">
+										<div th:include="pages/commons/page :: page"></div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("input[name='paramQuery']").keypress(function(event){
+					if(event.keyCode == 13){
+						query();
+					}
+				});
+				
+				$("#checkAll").click(function(){
+					if($(this).prop("checked")){
+						$("input[name='ids']").prop("checked",true);
+					}else{
+						$("input[name='ids']").prop("checked",false);
+					}
+				});
+				
+				$("select[name='status']").select2();
+			});
+			
+			function del(id){
+				bootbox.setLocale('cn');
+				bootbox.confirm("确定删除该授权吗?", function(result) 
+				{
+					if(result){
+						showMain('/rule/delete?id=' + id);
+					}
+				});
+			}
+			
+			function dels(){
+				if($("input[name='ids']:checked").length == 0){
+					bootbox.setLocale('cn');
+					bootbox.alert("请选择要删除的授权！", function(result) 
+					{
+						
+					});
+				}else{
+					var ids = "";
+					$("input[name='ids']:checked").each(function(index,item){
+						if(index > 0){
+							ids += ',';
+						}
+						ids += item.value;
+					});
+					bootbox.setLocale('cn');
+					bootbox.confirm("确定删除已选择的授权吗？", function(result) 
+					{
+						if(result){
+							showMain('/rule/deletes?ids=' + ids);
+						}
+					});
+				}
+			}
+			
+			function status(id,status){
+				bootbox.setLocale('cn');
+				bootbox.confirm(status == 0 ? "确定锁定该授权吗？" : "确定激活该授权吗？", function(result) 
+				{
+					if(result){
+						showMain('/rule/status?id=' + id + '&status=' + status);
+					}
+				});
+			}
+			
+			function statuss(status){
+				if($("input[name='ids']:checked").length == 0){
+					bootbox.setLocale('cn');
+					bootbox.alert(status == 0 ? "请选择要锁定的授权！" : "请选择要激活的授权！", function(result) 
+					{
+						
+					});
+				}else{
+					var ids = "";
+					$("input[name='ids']:checked").each(function(index,item){
+						if(index > 0){
+							ids += ',';
+						}
+						ids += item.value;
+					});
+					bootbox.setLocale('cn');
+					bootbox.confirm(status == 0 ? "确定锁定已选择的授权吗？" : "确定激活已选择的授权吗？", function(result) 
+					{
+						if(result){
+							showMain('/rule/statuss?ids=' + ids + '&status=' + status);
+						}
+					});
+				}
+			}
+		</script>
+	</body>
+</html>

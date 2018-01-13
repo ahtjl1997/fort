@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="rule">
+	<resultMap type="rule" id="ruleResult">
+		<result property="id" 			column="id" 			javaType="int"/>
+		<result property="name" 		column="name" 			javaType="java.lang.String"/>
+		<result property="memo" 		column="memo" 			javaType="java.lang.String"/>
+		<result property="status" 		column="status" 		javaType="int"/>
+		<result property="createTime" 	column="create_time" 	javaType="java.util.Date"/>
+		<result property="updateTime" 	column="update_time" 	javaType="java.util.Date"/>
+	</resultMap>
+	<select id="query" parameterType="java.util.HashMap" resultMap="ruleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `memo`,
+			  `status`,
+			  `create_time`,
+			  `update_time`
+			FROM `rule` 
+		]]>
+		<where>
+			<if test="keyword != null and keyword != ''">
+				<![CDATA[
+					(name LIKE CONCAT('%',#{keyword},'%') OR memo LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+			<if test="status != null and status != -1">
+				<![CDATA[
+					status = #{status}
+				]]>
+			</if>
+		</where>
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(`id`) FROM `rule` 
+		]]>
+		<where>
+			<if test="keyword != null and keyword != ''">
+				<![CDATA[
+					(name LIKE CONCAT('%',#{keyword},'%') OR memo LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+			<if test="status != null and status != -1">
+				<![CDATA[
+					status = #{status}
+				]]>
+			</if>
+		</where>
+	</select>
+	<select id="queryById" parameterType="int" resultMap="ruleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `memo`,
+			  `status`,
+			  `create_time`,
+			  `update_time`
+			FROM `rule` WHERE id = #{id}
+		]]>
+	</select>
+	<select id="queryByName" parameterType="java.lang.String" resultMap="ruleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `memo`,
+			  `status`,
+			  `create_time`,
+			  `update_time`
+			FROM `rule` WHERE name = #{name}
+		]]>
+	</select>
+	<insert id="insert" parameterType="rule">
+		<![CDATA[
+			INSERT INTO `rule`
+            (
+             `name`,
+             `memo`,
+             `status`,
+             `create_time`)
+			VALUES (
+			        #{name},
+			        #{memo},
+			        #{status},
+			        #{createTime})
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<update id="update" parameterType="rule">
+		<![CDATA[
+			UPDATE `rule`
+			SET 
+			  `name` = #{name},
+			  `memo` = #{memo},
+			  `status` = #{status},
+			  `update_time` = #{updateTime}
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	<update id="updateStatus" parameterType="java.util.HashMap">
+		<![CDATA[
+			UPDATE `rule`
+			SET 
+			  `status` = #{status},
+			  `update_time` = #{updateTime}
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM `rule` WHERE `id` = #{id}
+		]]>
+	</delete>
+</mapper>

@@ -53,4 +53,7 @@ public class RoleConfig {
 	public static final String UPDATE_RES = "UPDATE_RES";
 	//删除资源权限
 	public static final String DEL_RES = "DEL_RES";
+	
+	//授权管理
+	public static final String VIEW_RULE = "VIEW_RULE";
 }

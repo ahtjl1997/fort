@@ -16,5 +16,7 @@
 		<typeAlias alias="account" type="com.fort.module.resource.Account"/>
 		<typeAlias alias="os" type="com.fort.module.os.Os"/>
 		<typeAlias alias="resType" type="com.fort.module.os.ResType"/>
+		<typeAlias alias="rule" type="com.fort.module.rule.Rule"/>
+		<typeAlias alias="ruleInfo" type="com.fort.module.rule.RuleInfo"/>
 	</typeAliases>
 </configuration>

@@ -239,6 +239,91 @@ INSERT INTO `os` VALUES (1,'Debian',1),(2,'CentOs',1),(3,'Windows 7',2),(4,'Wind
 UNLOCK TABLES;
 
 --
+-- Table structure for table `rel_rule_employee`
+--
+
+DROP TABLE IF EXISTS `rel_rule_employee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rel_rule_employee` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `emp_id` int(11) DEFAULT NULL,
+  `rule_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `emp_id` (`emp_id`),
+  KEY `rule_id` (`rule_id`),
+  CONSTRAINT `rel_rule_employee_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rel_rule_employee_ibfk_2` FOREIGN KEY (`rule_id`) REFERENCES `rule` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rel_rule_employee`
+--
+
+LOCK TABLES `rel_rule_employee` WRITE;
+/*!40000 ALTER TABLE `rel_rule_employee` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rel_rule_employee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rel_rule_resource`
+--
+
+DROP TABLE IF EXISTS `rel_rule_resource`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rel_rule_resource` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res_id` int(11) DEFAULT NULL,
+  `use_ssh` int(11) DEFAULT NULL,
+  `use_sftp` int(11) DEFAULT NULL,
+  `use_rdp` int(11) DEFAULT NULL,
+  `rule_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `rule_id` (`rule_id`),
+  CONSTRAINT `rel_rule_resource_ibfk_1` FOREIGN KEY (`rule_id`) REFERENCES `rule` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rel_rule_resource`
+--
+
+LOCK TABLES `rel_rule_resource` WRITE;
+/*!40000 ALTER TABLE `rel_rule_resource` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rel_rule_resource` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rel_rule_resource_account`
+--
+
+DROP TABLE IF EXISTS `rel_rule_resource_account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rel_rule_resource_account` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `acc_id` int(11) DEFAULT NULL,
+  `rel_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `acc_id` (`acc_id`),
+  KEY `rel_id` (`rel_id`),
+  CONSTRAINT `rel_rule_resource_account_ibfk_1` FOREIGN KEY (`acc_id`) REFERENCES `account` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rel_rule_resource_account_ibfk_2` FOREIGN KEY (`rel_id`) REFERENCES `rel_rule_resource` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rel_rule_resource_account`
+--
+
+LOCK TABLES `rel_rule_resource_account` WRITE;
+/*!40000 ALTER TABLE `rel_rule_resource_account` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rel_rule_resource_account` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `res_type`
 --
 
@@ -346,6 +431,33 @@ LOCK TABLES `role` WRITE;
 INSERT INTO `role` VALUES (1,'系统管理员','具有系统最高权限，可管理系统所有信息。','2017-08-30 13:25:52',NULL,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),(2,'设备管理员','','2018-01-12 16:54:16',NULL,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1);
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `rule`
+--
+
+DROP TABLE IF EXISTS `rule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `memo` text COLLATE utf8_unicode_ci,
+  `status` int(11) DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rule`
+--
+
+LOCK TABLES `rule` WRITE;
+/*!40000 ALTER TABLE `rule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rule` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -356,4 +468,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-12 17:12:25
+-- Dump completed on 2018-01-13 14:19:15

@@ -104,6 +104,11 @@ public class EmployeeDetailsService implements UserDetailsService {
 			roleList.add(getGrantedAuthority(RoleConfig.VIEW_RES));
 		}
 		
+		//授权管理
+		if(role.getViewEmp() == 1 && role.getViewRes() == 1) {
+			roleList.add(getGrantedAuthority(RoleConfig.VIEW_RULE));
+		}
+		
 		if(FortObjectUtil.isEmpty(employee)) {
 			throw new RuntimeException("用户名密码错误");
 		}
