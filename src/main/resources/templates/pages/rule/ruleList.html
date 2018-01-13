@@ -127,6 +127,10 @@
 				});
 				
 				$("select[name='status']").select2();
+				
+				$("select[name='status']").on('change',function(){
+					query();
+				});
 			});
 			
 			function del(id){

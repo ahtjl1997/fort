@@ -30,7 +30,7 @@
 			</if>
 			<if test="status != null and status != -1">
 				<![CDATA[
-					status = #{status}
+					AND status = #{status}
 				]]>
 			</if>
 		</where>
@@ -47,7 +47,7 @@
 			</if>
 			<if test="status != null and status != -1">
 				<![CDATA[
-					status = #{status}
+					AND status = #{status}
 				]]>
 			</if>
 		</where>

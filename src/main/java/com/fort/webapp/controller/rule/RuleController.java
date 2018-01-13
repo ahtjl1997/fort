@@ -30,7 +30,7 @@ public class RuleController {
 	public String query(ModelMap model,
 			@RequestParam(name="paramQuery",defaultValue="") String keyword,
 			@RequestParam(name="startIndex",defaultValue="0") int startIndex,
-			@RequestParam(name="startIndex",defaultValue="-1") int status) {
+			@RequestParam(name="status",defaultValue="-1") int status) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("keyword", keyword);
 		if(status != -1) {
