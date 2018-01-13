@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="ie lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html class="ie lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="ie lt-ie9"> <![endif]-->
+<!--[if gt IE 8]> <html class="ie gt-ie8"> <![endif]-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		
+		<!-- Bootstrap -->
+		<link th:href="@{/common/bootstrap/css/bootstrap.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/css/responsive.css}" rel="stylesheet" />
+		
+		<!-- Glyphicons Font Icons -->
+		<link th:href="@{/common/theme/css/glyphicons.css}" rel="stylesheet" />
+		
+		<!-- Uniform Pretty Checkboxes -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/pixelmatrix-uniform/css/uniform.default.css}" rel="stylesheet" />
+		
+		<!-- PrettyPhoto -->
+	    <link th:href="@{/common/theme/scripts/plugins/gallery/prettyphoto/css/prettyPhoto.css}" rel="stylesheet" />
+		
+		<!-- Bootstrap Extended -->
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/jasny-bootstrap/css/jasny-bootstrap-responsive.min.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-wysihtml5/css/bootstrap-wysihtml5-0.0.2.css}" rel="stylesheet">
+		<link th:href="@{/common/bootstrap/extend/bootstrap-select/bootstrap-select.css}" rel="stylesheet" />
+		<link th:href="@{/common/bootstrap/extend/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+		
+		<!-- DateTimePicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/bootstrap-datetimepicker/css/datetimepicker.css}" rel="stylesheet" />
+		
+		<!-- JQueryUI -->
+		<link th:href="@{/common/theme/scripts/plugins/system/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.min.css}" rel="stylesheet" />
+		
+		<!-- MiniColors ColorPicker Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/color/jquery-miniColors/jquery.miniColors.css}" rel="stylesheet" />
+		
+		<!-- Notyfy Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/jquery.notyfy.css}" rel="stylesheet" />
+		<link th:href="@{/common/theme/scripts/plugins/notifications/notyfy/themes/default.css}" rel="stylesheet" />
+		
+		<!-- Gritter Notifications Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/notifications/Gritter/css/jquery.gritter.css}" rel="stylesheet" />
+		
+		<!-- Easy-pie Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/charts/easy-pie/jquery.easy-pie-chart.css}" rel="stylesheet" />
+	
+		<!-- Google Code Prettify Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/other/google-code-prettify/prettify.css}" rel="stylesheet" />
+	
+		<!-- Main Theme Stylesheet :: CSS -->
+		<link th:href="@{/common/theme/css/style-dark.css?1369414383}" rel="stylesheet" />
+		
+		<!-- Select2 Plugin -->
+		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
+		
+	</head>
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/rule/query')" class="glyphicons shield"><i></i>运维授权</a></li>
+			<li class="divider"></li>
+			<li th:text="${rule.id eq 0 ? '添加授权' : '编辑授权'}">添加授权</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<!-- Form -->
+			<form th:object="${rule}" th:action="*{id eq 0 ? '/rule/insert' : '/rule/update'}" class="form-horizontal" style="margin-bottom: 0;" id="ruleForm" method="post" autocomplete="off">
+				<div class="widget">
+					<!-- Widget heading -->
+					<div class="widget-head">
+						<h4 class="heading">基本信息</h4>
+					</div>
+					<!-- // Widget heading END -->
+					<div class="widget-body">
+						<div class="row-fluid">
+							<!-- Column -->
+							<div class="span6">
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="name">授权名称</label>
+									<div class="controls">
+										<input class="span12" th:field="*{name}" type="text" placeholder="请输入名称"/>
+										<input th:if="*{id}" type="hidden" th:field="*{id}" />
+									</div>
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="status">授权状态</label>
+									<div class="controls">
+										<select class="selectpicker span12" th:field="*{status}">
+											<option th:if="*{status eq 0 ? 'selected=selected' : ''}" value="0">锁定</option>
+											<option th:if="*{status eq 1 ? 'selected=selected' : ''}" value="1">激活</option>
+										</select>
+									</div>
+								</div>
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="name">描述信息</label>
+									<div class="controls">
+										<textarea class="wysihtml5 span12" style="resize: none;height: 80px;" placeholder="请输入描述信息" th:field="*{memo}" th:readonly="*{name eq '系统管理员' ? 'readonly' : 'false'}"></textarea>
+									</div>
+								</div>
+								<!-- // Group END -->
+							</div>
+						</div>
+						<hr class="separator">
+						<div class="form-actions">
+							<button type="submit" id="subData" disabled="disabled" class="btn btn-success btn-icon glyphicons ok"><i></i>保&nbsp;存</button>
+							<button type="button" class="btn btn-icon btn-default glyphicons circle_remove" onclick="showMain('/rule/query')"><i></i>取&nbsp;消</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- Select2 Plugin -->
+		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				//设备名称及IP地址校验
+				$.validator.setDefaults(
+				{
+					submitHandler: function() { 
+						//alert("submitted!");
+						saveData();
+					},
+					showErrors: function(map, list) 
+					{
+						this.currentElements.parents('label:first, .controls:first').find('.error').remove();
+						this.currentElements.parents('.control-group:first').removeClass('error');
+						
+						$.each(list, function(index, error) 
+						{
+							var ee = $(error.element);
+							var eep = ee.parents('label:first').length ? ee.parents('label:first') : ee.parents('.controls:first');
+							
+							ee.parents('.control-group:first').addClass('error');
+							eep.find('.error').remove();
+							eep.append('<p class="error help-block"><span class="label label-important">' + error.message + '</span></p>');
+						});
+						//refreshScrollers();
+					}
+				});
+				
+				$("#ruleForm").validate({
+					rules:{
+						name:{
+							required: true,
+							minlength: 1,
+							maxlength: 25,
+							checkName: true
+						}
+					},messages:{
+						name: {
+							required: "请输入名称",
+							minlength: "请输入至少1个字符组成的名称",
+							maxlength: "名称不能超过25个字",
+							checkName: "该授权名称重复，请重新输入"
+						}
+					}
+				});
+				
+				jQuery.validator.addMethod("checkName",function(value,element){
+					var flag = false;
+					if(value != ''){
+						$.ajax({
+							url:"/rule/checkName",
+							data:"name=" + value,
+							dataType:"text",
+							async:false,
+							success:function(resId){
+								if(resId == 0 || resId == '0' || resId == $("#id").val()){
+									flag = true;
+								}
+							}
+						});
+					}
+					return flag;
+				});
+				
+				$("#subData").removeAttr("disabled");
+			});
+			
+			function saveData(){
+				$.ajax({
+		             type: "POST",
+		             url: $("#ruleForm").prop("action"),
+		             data: $("#ruleForm").serialize(),
+		             success: function (result) {
+		            	 $("#content").html(result);
+		             }
+		    	 });
+			}
+		</script>
+	</body>
+</html>
