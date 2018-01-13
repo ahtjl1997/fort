@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -39,5 +40,15 @@ public class RuleController {
 		model.put("paramQuery", keyword);
 		model.put("status", status);
 		return "pages/rule/ruleList";
+	}
+	
+	@RequestMapping("/insertPage")
+	public String insertPage(@ModelAttribute("rule") Rule rule) {
+		return "pages/rule/ruleInfo";
+	}
+	
+	@RequestMapping("/edit")
+	public String edit(@ModelAttribute("rule") Rule rule) {
+		return "pages/rule/ruleInfo";
 	}
 }
