@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+      <style>
+			#page_table{
+				margin-top: 10px;
+				margin-right: 20px;
+			}
+	  </style>
+	<body>
+		<div th:fragment="ruleResourcePage">
+			<script type="text/javascript">
+			     function gopage(lastnum){
+			    	 var page = $("#page").val();
+			    	 var num = parseInt(page * 15) - parseInt(15);
+			    	 if (num > lastnum) {
+			    		 num = lastnum;
+			 		 }
+			    	 if(num < 0){
+			    		 num = 0;
+			    	 }
+			    	 $("#startIndex").val(num);
+			    	 query();
+			     }
+			     function query(){
+			    	 $.ajax({
+			             type: "POST",
+			             url: $("#page_table").parents("form").prop("action"),
+			             data: $("#page_table").parents("form").serialize(),
+			             success: function (result) {
+			            	 $("#resourceWindow .modal-body").html(result);
+			             }
+			    	 });
+			     }
+			  </script>
+			<div class="span6">
+				<div class="dataTables_info" id="DataTables_Table_0_info">
+					<span th:text="${'共计 ' + page.totalCount + ' 条记录，' + '当前第 ' + page.currentPage + '/' + page.pageCount + ' 页'}"></span>
+				</div>
+			</div>
+			<div class="span6" id="page_table">
+				<input type="hidden" name="startIndex" id="startIndex" value="0">
+	     		<input type="hidden" name="lastIndex" id="lastIndex" th:value='${page.lastIndex}'>
+				<div class="dataTables_paginate paging_bootstrap pagination">
+					<ul>
+						<li th:if="${page.startIndex eq 0}" class="previous first disabled"><a href="javascript:;">首页</a></li>
+						<li th:if="${page.startIndex ne 0}" class="previous first"><a href="javascript:;">首页</a></li>
+						<li th:if="${page.startIndex eq 0}" class="previous disabled"><a href="javascript:;">上一页</a></li>
+						<li th:if="${page.startIndex ne 0}" class="previous"><a href="javascript:;">上一页</a></li>
+					  	<li th:if="${page.nextIndex eq page.startIndex}" class="next disabled"><a href="javascript:;">下一页</a></li>
+					  	<li th:if="${page.nextIndex ne page.startIndex}" class="next"><a href="javascript:;">下一页</a></li>
+						<li th:if="${page.lastIndex eq page.startIndex}" class="last disabled"><a href="javascript:;">末页</a></li>
+						<li th:if="${page.lastIndex ne page.startIndex or page.lastIndex gt page.startIndex}" class="last"><a href="javascript:;">末页</a></li>
+						<div class="input-append">
+						  	<input id="page" type="text" placeholder="" style="width: 35px;" th:value="${page.currentPage}"/>
+						  	<button th:onclick="'gopage(\'' + ${page.lastIndex} + '\')'" class="btn btn-default" type="button"><i class="icon-search" style="margin-top: 3px;"></i></button>
+						</div>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

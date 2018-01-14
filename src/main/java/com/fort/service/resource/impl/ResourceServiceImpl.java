@@ -237,5 +237,14 @@ public class ResourceServiceImpl implements ResourceService {
 			throw new RuntimeException("查询资源类型时出现错误" + e.getMessage());
 		}
 	}
+	
+	@Override
+	public List<Account> queryAccountByResId(int resId){
+		try {
+			return accountDao.queryByResId(resId);
+		}catch (Exception e) {
+			throw new RuntimeException("查询资源类型时出现错误" + e.getMessage());
+		}
+	}
 
 }

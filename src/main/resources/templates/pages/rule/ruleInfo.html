@@ -113,6 +113,133 @@
 								<!-- // Group END -->
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="widget">
+					<!-- Widget heading -->
+					<div class="widget-head">
+						<h4 class="heading">授权用户</h4>
+					</div>
+					<!-- // Widget heading END -->
+					<div class="widget-body">
+						<div class="row-fluid">
+							<!-- Column -->
+							<div class="span6">
+								<!-- Group -->
+								<div class="control-group">
+									<label class="control-label" for="status">用户信息</label>
+									<div class="controls">
+										<div id="userSelect" class="select2-container select2-container-multi" style="width:100%;">
+											<ul class="select2-choices" style="border-radius:4px;border-color: #D8D9DA;min-height: 30px;">
+												<!-- 
+												<li class="select2-search-choice"><div class="hand user">admin</div><a href="#" onclick="return false;" class="select2-search-choice-close removeUser" tabindex="-1"></a></li>
+												 -->
+												<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+													<img alt="" th:src="@{/images/icon/add_icon.png}" class="addUserSelect"/>
+												</li>
+												<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+													<img alt="" th:src="@{/images/icon/delete_icon.png}" class="delUserSelect"/>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<input type="hidden" name="users" value=""/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="widget">
+					<!-- Widget heading -->
+					<div class="widget-head">
+						<h4 class="heading">授权设备</h4>
+						<div class="dataTables_filter" id="DataTables_Table_0_filter">
+							<label>
+								<a href="#" title="添加" class="glyphicons no-js circle_plus" onclick="showResource()"><i></i></a>&nbsp;
+								<a href="#" title="删除" class="glyphicons no-js circle_remove" onclick="delAllRes()"><i></i></a>&nbsp;
+							</label>
+						</div>
+					</div>
+					<!-- // Widget heading END -->
+					<div class="widget-body">
+						<div class="row-fluid">
+							<div class="span12">
+								<!-- Table -->
+								<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline" role="grid">
+									<div class="row-fluid">
+										<div class="span12">
+											<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+												<!-- Table heading -->
+												<thead>
+													<tr role="row">
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 10px;">
+														  <div >
+															<input type="checkbox" class="checkbox" id="checkAllRuleResource" style="width: 18px;"/>
+														  </div>
+														</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 200px;">设备名称</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 120px;">IP地址</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 100px;">设备类型</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 100px;">操作系统</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">授权账号</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">授权协议</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width:100px;">操作</th>
+													</tr>
+												</thead>
+												<!-- // Table heading END -->
+												<!-- Table body -->
+												<tbody role="alert" aria-live="polite" aria-relevant="all" id="resourceBody">
+													<!-- <tr class="gradeA odd" >
+														<td class="" style="vertical-align:middle;">
+															<input type="checkbox" class="checkbox" name="ids" style="width: 18px;background-color: #FFF;" />
+														</td>
+														<td class="" style="vertical-align:middle;">计算机</td>
+														<td class="" style="vertical-align:middle;">192.168.1.101</td>
+														<td class="" style="vertical-align:middle;">Linux</td>
+														<td class="" style="vertical-align:middle;">Debian</td>
+														<td class="">
+															<div id="accountSelect" class="select2-container select2-container-multi" style="width:100%;">
+																<ul class="select2-choices" style="border-radius:4px;border-color: #D8D9DA;min-height: 30px;">
+																	<li class="select2-search-choice"><div class="hand account">root</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+																	<li class="select2-search-choice"><div class="hand account">nemo</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+																	
+																	<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+																		<img alt="" th:src="@{/images/icon/add_icon.png}" class="addAccountSelect"/>
+																	</li>
+																	<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+																		<img alt="" th:src="@{/images/icon/delete_icon.png}" class="delAccountSelect"/>
+																	</li>
+																</ul>
+															</div>
+														</td>
+														<td class="">
+															<div id="protocolSelect" class="select2-container select2-container-multi" style="width:100%;">
+																<ul class="select2-choices" style="border-radius:4px;border-color: #D8D9DA;min-height: 30px;">
+																	<li class="select2-search-choice"><div class="hand protocol">SSH</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+																	<li class="select2-search-choice"><div class="hand protocol">SFTP</div><a href="#" onclick="return false;" class="select2-search-choice-close" tabindex="-1"></a></li>
+																	
+																	<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+																		<img alt="" th:src="@{/images/icon/add_icon.png}" class="addProtocolSelect"/>
+																	</li>
+																	<li class="select2-search-choice" style="padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;">
+																		<img alt="" th:src="@{/images/icon/delete_icon.png}" class="delProtocolSelect"/>
+																	</li>
+																</ul>
+															</div>
+														</td>
+														<td class="" style="vertical-align:middle;">
+															<a href="#" title="删除" class="glyphicons no-js circle_remove" th:onclick="'del('+')'"><i></i></a>
+														</td>
+													</tr> -->
+												</tbody>
+											</table>
+											<input type="hidden" name="resources" value=""/>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
 						<hr class="separator">
 						<div class="form-actions">
 							<button type="submit" id="subData" disabled="disabled" class="btn btn-success btn-icon glyphicons ok"><i></i>保&nbsp;存</button>
@@ -121,6 +248,32 @@
 					</div>
 				</div>
 			</form>
+		</div>
+		<div id="userWindow" class="modal hide fade" style="width: 80%;margin-left: -40%;">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3>用户信息</h3>
+		  </div>
+		  <div class="modal-body">
+		  	
+		  </div>
+		  <div class="modal-footer">
+		    <a href="#" class="btn btn-default">关闭</a>
+		    <a href="#" class="btn btn-primary">确定</a>
+		  </div>
+		</div>
+		<div id="resourceWindow" class="modal hide fade" style="width: 80%;margin-left: -40%;">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3>设备信息</h3>
+		  </div>
+		  <div class="modal-body">
+		  	
+		  </div>
+		  <div class="modal-footer">
+		    <a href="#" class="btn btn-default">关闭</a>
+		    <a href="#" class="btn btn-primary">确定</a>
+		  </div>
 		</div>
 		<!-- Select2 Plugin -->
 		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
@@ -193,6 +346,179 @@
 					return flag;
 				});
 				
+				$("#checkAllRuleResource").click(function(){
+					if($(this).prop("checked")){
+						$("input[name='resIds']").prop("checked",true);
+					}else{
+						$("input[name='resIds']").prop("checked",false);
+					}
+				});
+				
+				$(".modal-backdrop").live('click',function(){
+					$("#userWindow .modal-body").html("");
+					$("#resourceWindow .modal-body").html("");
+				});
+				
+				$(".addUserSelect").on('click',function(){
+					showUser();
+				});
+				
+				$("#userWindow .btn-default").on('click',function(){
+					$("#userWindow").modal("hide");
+					$("#userWindow .modal-body").html("");
+				});
+				
+				$("#resourceWindow .btn-default").on('click',function(){
+					$("#resourceWindow").modal("hide");
+					$("#resourceWindow .modal-body").html("");
+				});
+				
+				$("#userWindow .close").on('click',function(){
+					$("#userWindow .modal-body").html("");
+				});
+				
+				$("#resourceWindow .close").on('click',function(){
+					$("#resourceWindow .modal-body").html("");
+				});
+				
+				$("#resourceWindow .btn-primary").on('click',function(){
+					$("#resourceWindow").modal("hide");
+					
+					$("input[name='resourceIds']:checked").each(function(){
+						var id = $(this).val();
+						var name = $(this).parent().parent().children().eq(1).text().trim();
+						var ip = $(this).parent().parent().children().eq(2).text().trim();
+						var type = $(this).parent().parent().children().eq(3).text().trim();
+						var os = $(this).parent().parent().children().eq(4).text().trim();
+						
+						var element = "<tr class=\"gradeA odd\">";
+						element += "<td class=\"\" style=\"vertical-align:middle;\">";
+						element += "<input class=\"checkbox\" name=\"resIds\" value=\"" + id + "\" style=\"width: 18px;background-color: #FFF;\" type=\"checkbox\">";
+						element += "</td><td class=\"\" style=\"vertical-align:middle;\">" + name + "</td>";
+						element += "<td class=\"\" style=\"vertical-align:middle;\">" + ip + "</td>";
+						element += "<td class=\"\" style=\"vertical-align:middle;\">" + type + "</td>";
+						element += "<td class=\"\" style=\"vertical-align:middle;\">" + os + "</td>";
+						element += "<td class=\"\">";
+						element += "<div class=\"select2-container select2-container-multi\" id=\"accountSelect\" style=\"width:100%;\">";
+						element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
+						
+						$.ajax({
+							url:"/rule/queryAccountByResId",
+							type:"get",
+							data:"resId=" + id,
+							dataType:"JSON",
+							async:false,
+							success:function(result){
+								$.each(result,function(i,item){
+									element += "<li class=\"select2-search-choice\"><div class=\"hand account\">" + item.name + "</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+								});
+							}
+						});
+						
+						//element += "<li class=\"select2-search-choice\"><div class=\"hand account\">root</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+						//element += "<li class=\"select2-search-choice\"><div class=\"hand account\">nemo</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+								
+						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+						element += "<img alt=\"\" class=\"addAccountSelect\" src=\"/images/icon/add_icon.png\">";
+						element += "</li>";
+						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+						element += "<img alt=\"\" class=\"delAccountSelect\" src=\"/images/icon/delete_icon.png\">";
+						element += "</li>";
+						element += "</ul>";
+						element += "</div>";
+						element += "</td>";
+						element += "<td class=\"\">";
+						element += "<div class=\"select2-container select2-container-multi\" id=\"protocolSelect\" style=\"width:100%;\">";
+						element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
+						
+						if($(this).parent().find("input[name='useSsh']").val() == 1){
+							element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">SSH</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
+						}
+						
+						if($(this).parent().find("input[name='useSftp']").val() == 1){
+							element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">SFTP</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
+						}
+						
+						if($(this).parent().find("input[name='useRdp']").val() == 1){
+							element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">RDP</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
+						}
+						
+						//element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">SFTP</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+									
+						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+						element += "<img alt=\"\" class=\"addProtocolSelect\" src=\"/images/icon/add_icon.png\">";
+						element += "</li>";
+						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+						element += "<img alt=\"\" class=\"delProtocolSelect\" src=\"/images/icon/delete_icon.png\">";
+						element += "</li>";
+						element += "</ul>";
+						element += "</div>";
+						element += "</td>";
+						element += "<td class=\"\" style=\"vertical-align:middle;\">";
+						element += "<a class=\"glyphicons no-js circle_remove\" href=\"#\" title=\"删除\" onclick=\"delRes(this)\"><i></i></a>";
+						element += "</td>";
+						element += "</tr>";
+					$("#resourceBody").append(element);
+						
+					});
+					$("#resourceWindow .modal-body").html("");
+				});
+				
+				$("#userWindow .btn-primary").on('click',function(){
+					$("#userWindow").modal("hide");
+					
+					var users = $("input[name='users']").val();
+					if(users == ''){
+						users = '[]';
+					}
+					users = eval(users);
+					$("input[name='userIds']:checked").each(function(){
+						var id = $(this).val();
+						var username = $(this).parent().next().text().trim();
+						var name = $(this).parent().next().next().text().trim();
+						username = name + "(" + username + ")";
+						var userObj = {'id':id,'name':name,'username':username};
+						var flag = true;
+						
+						for(var index = 0;index < users.length;index++){
+							if(users[index].id == id){
+								flag = false;
+							}
+						}
+						if(flag){
+							users.push(userObj);
+							var element = "<li class=\"select2-search-choice\"><div class=\"hand user\">" + username + "</div>" +
+							"<a class=\"select2-search-choice-close removeUser\" index=\"" + id + "\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+							$(".addUserSelect").parent().before(element);
+						}
+					});
+					$("input[name='users']").val(JSON.stringify(users));
+					$("#userWindow .modal-body").html("");
+				});
+				$(".removeUser").live('click',function(){
+					var obj = $(this);
+					var users = $("input[name='users']").val();
+					if(users == ''){
+						users = '[]';
+					}
+					users = eval(users);
+					var id = $(obj).attr('index');
+					for(var index = 0;index < users.length;index++){
+						
+						if(users[index].id == id){
+							users.splice(index,1);
+							break;
+						}
+					}
+					$("input[name='users']").val(JSON.stringify(users));
+					$(obj).parent().remove();
+				});
+				
+				$(".delUserSelect").on('click',function(){
+					$(this).parent().prev().prevAll().remove();
+					$("input[name='users']").val('[]');
+				});
+				
 				$("#subData").removeAttr("disabled");
 			});
 			
@@ -205,6 +531,39 @@
 		            	 $("#content").html(result);
 		             }
 		    	 });
+			}
+			
+			//显示用户窗口
+			function showUser(){
+				$("#userWindow").modal("show");
+				loadInfo('/rule/queryUser',"userWindow");
+			}
+			
+			function loadInfo(url,id){
+				$("#" + id + " .modal-body").load(
+					url,
+					"t=" + new Date().getTime(),
+					function(responseTxt,statusTxt,xhr){
+						if(statusTxt == "error"){
+							$("#userWindow .modal-body").html(responseTxt);
+						}
+					}
+				);
+			}
+			
+			function showResource(){
+				$("#resourceWindow").modal("show");
+				loadInfo('/rule/queryResource','resourceWindow');
+			}
+			
+			function delRes(obj){
+				$(obj).parent().parent().remove();
+			}
+			
+			function delAllRes(){
+				$("input[name='resIds']:checked").each(function(){
+					$(this).parent().parent().remove();
+				});
 			}
 		</script>
 	</body>

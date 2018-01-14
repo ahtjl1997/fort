@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.fort.module.os.Os;
 import com.fort.module.os.ResType;
+import com.fort.module.resource.Account;
 import com.fort.module.resource.Resource;
 import com.util.page.SearchResult;
 
@@ -31,4 +32,6 @@ public interface ResourceService {
 	public List<Os> queryOsByTypeId(int typeId);
 	
 	public List<ResType> queryResType();
+	
+	public List<Account> queryAccountByResId(int resId);
 }
