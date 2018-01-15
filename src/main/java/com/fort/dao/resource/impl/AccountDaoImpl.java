@@ -1,7 +1,9 @@
 package com.fort.dao.resource.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Repository;
 
 import com.fort.dao.base.BaseDao;
@@ -55,6 +57,24 @@ public class AccountDaoImpl extends BaseDao implements AccountDao {
 			return getSqlSession().delete("account.delete", id);
 		}catch (Exception e) {
 			throw new RuntimeException("删除账号信息时连接数据库超时");
+		}
+	}
+
+	@Override
+	public List<Account> query(Map<String, Object> map, RowBounds rb) {
+		try {
+			return getSqlSession().selectList("account.query", map, rb);
+		}catch (Exception e) {
+			throw new RuntimeException("自定义条件查询账号信息时连接数据库超时");
+		}
+	}
+
+	@Override
+	public int count(Map<String, Object> map) {
+		try {
+			return getSqlSession().selectOne("account.count", map);
+		}catch (Exception e) {
+			throw new RuntimeException("自定义条件统计账号总记录数时连接数据库超时");
 		}
 	}
 

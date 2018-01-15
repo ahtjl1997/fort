@@ -2,8 +2,10 @@ package com.fort.webapp.controller.rule;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -319,5 +321,48 @@ public class RuleController {
 			throw new RuntimeException("无效的设备ID");
 		}
 		return resourceService.queryAccountByResId(resId);
+	}
+	
+	@RequestMapping("/queryAccount")
+	public String queryAccount(ModelMap model,
+			@RequestParam(name="paramQuery",defaultValue="") String keyword,
+			@RequestParam(name="startIndex",defaultValue="0") int startIndex,
+			@RequestParam(name="resId",defaultValue="0") int resId) {
+		if(resId == 0) {
+			throw new RuntimeException("无效的设备ID");
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("keyword", keyword);
+		map.put("resId", resId);
+		SearchResult<Account> sr = resourceService.queryAccount(map, startIndex, 5);
+		model.put("list", sr.getList());
+		model.put("page", sr.getPage());
+		model.put("paramQuery", keyword);
+		model.put("resId", resId);
+		return "pages/rule/accountList";
+	}
+	
+	@RequestMapping("/queryProtocol")
+	@ResponseBody
+	public Set<String> queryProrocol(@RequestParam(name="resId",defaultValue="0") int resId) {
+		if(resId == 0) {
+			throw new RuntimeException("无效的设备ID");
+		}
+		
+		Resource r = resourceService.queryById(resId);
+		if(FortObjectUtil.isEmpty(r)) {
+			throw new RuntimeException("该设备不存在或已被删除");
+		}
+		Set<String> set = new HashSet<String>();
+		if(r.getUseRdp() == 1) {
+			set.add("RDP");
+		}
+		if(r.getUseSsh() == 1) {
+			set.add("SSH");
+		}
+		if(r.getUseSftp() == 1) {
+			set.add("SFTP");
+		}
+		return set;
 	}
 }

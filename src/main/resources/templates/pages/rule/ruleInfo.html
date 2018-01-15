@@ -63,7 +63,14 @@
 		
 		<!-- Select2 Plugin -->
 		<link th:href="@{/common/theme/scripts/plugins/forms/select2/select2.css}" rel="stylesheet" />
-		
+		<style type="text/css">
+			.protocolSpan{
+				margin-left: 2px;
+			}
+			.hand{
+				cursor:pointer;
+			}
+		</style>
 	</head>
 	<body>
 		<ul class="breadcrumb">
@@ -177,13 +184,13 @@
 															<input type="checkbox" class="checkbox" id="checkAllRuleResource" style="width: 18px;"/>
 														  </div>
 														</th>
-														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 200px;">设备名称</th>
-														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 120px;">IP地址</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 150px;">设备名称</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 100px;">IP地址</th>
 														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 100px;">设备类型</th>
 														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 100px;">操作系统</th>
 														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">授权账号</th>
 														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">授权协议</th>
-														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width:100px;">操作</th>
+														<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width:50px;">操作</th>
 													</tr>
 												</thead>
 												<!-- // Table heading END -->
@@ -275,6 +282,38 @@
 		    <a href="#" class="btn btn-primary">确定</a>
 		  </div>
 		</div>
+		<div id="accountWindow" class="modal hide fade" style="width: 700px;">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3>账号信息</h3>
+		  </div>
+		  <div class="modal-body">
+		  		
+		  </div>
+		  <div class="modal-footer">
+		    <a href="#" class="btn btn-default">关闭</a>
+		    <a href="#" class="btn btn-primary">确定</a>
+		  </div>
+		</div>
+		
+		<div id="protocolWindow" class="modal hide fade" style="width: 700px;">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3>协议信息</h3>
+		    <input type="hidden" id="checkId" value=""/>
+		  </div>
+		  <div class="modal-body">
+		  		<!-- 
+		  	 <input type="checkbox" class="checkbox protocolSpan" style="margin-top: -1px;"/><span class="protocolSpan">SSH</span>
+		  		<input type="checkbox" class="checkbox protocolSpan" style="margin-top: -1px;"/><span class="protocolSpan">SSH</span>
+		  		 -->
+		  </div>
+		  <div class="modal-footer">
+		    <a href="#" class="btn btn-default">关闭</a>
+		    <a href="#" class="btn btn-primary">确定</a>
+		  </div>
+		</div>
+		
 		<!-- Select2 Plugin -->
 		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
 		<script type="text/javascript">
@@ -346,6 +385,12 @@
 					return flag;
 				});
 				
+				$(".addRuleAccountSelect").live('click',function(){
+					$("#accountWindow").modal("show");
+					var resId = $(this).parent().parent().parent().parent().parent().children().eq(0).find("input").val();
+					loadInfo('/rule/queryAccount?resId=' + resId,"accountWindow");
+				});
+				
 				$("#checkAllRuleResource").click(function(){
 					if($(this).prop("checked")){
 						$("input[name='resIds']").prop("checked",true);
@@ -357,6 +402,7 @@
 				$(".modal-backdrop").live('click',function(){
 					$("#userWindow .modal-body").html("");
 					$("#resourceWindow .modal-body").html("");
+					$("#accountWindow .modal-body").html("");
 				});
 				
 				$(".addUserSelect").on('click',function(){
@@ -368,9 +414,56 @@
 					$("#userWindow .modal-body").html("");
 				});
 				
+				$("#accountWindow .btn-default").on('click',function(){
+					$("#accountWindow").modal("hide");
+					$("#accountWindow .modal-body").html("");
+				});
+				
 				$("#resourceWindow .btn-default").on('click',function(){
 					$("#resourceWindow").modal("hide");
 					$("#resourceWindow .modal-body").html("");
+				});
+				
+				$("#protocolWindow .btn-default").on('click',function(){
+					$("#protocolWindow").modal('hide');
+				});
+				
+				$("#protocolWindow .btn-primary").on('click',function(){
+					$("#protocolWindow").modal('hide');
+					var resId = $("#protocolWindow").find("#checkId").val();
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					resources = eval(resources);
+					var protocols = new Array();
+					for(var i = 0; i < resources.length; i++){
+						if(resId == resources[i].resId){
+							protocols = resources[i].protocols;
+							break;
+						}
+					}
+					$("input[name='useProtocols']:checked").each(function(){
+						var protocol = $(this).val();
+						var element = "<li class=\"select2-search-choice\"><div class=\"hand ruleProtocol\">" + protocol
+						+ "</div><a class=\"select2-search-choice-close removeRuleProtocol\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+						$("input[name='resIds']").each(function(){
+							if(resId == $(this).val()){
+								var falg = true;
+								for(var i = 0; i < protocols.length;i++){
+									if(protocol == protocols[i]){
+										falg = false;
+										break;
+									}
+								}
+								if(falg){
+									protocols.push(protocol);
+									$(this).parent().parent().children().eq(6).find(".addRuleProtocolSelect").parent().before(element);
+								}
+							}
+						});
+					});
+					$("input[name='resources']").val(JSON.stringify(resources));
 				});
 				
 				$("#userWindow .close").on('click',function(){
@@ -381,8 +474,196 @@
 					$("#resourceWindow .modal-body").html("");
 				});
 				
+				$("#accountWindow .close").on('click',function(){
+					$("#accountWindow .modal-body").html("");
+				});
+				
+				$(".delRuleAccountSelect").live('click',function(){
+					var resId = $(this).parent().parent().parent().parent().parent().children().eq(0).find("input").val();
+					$(this).parent().prev().prevAll().remove();
+					
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					resources = eval(resources);
+					for(var i = 0; i < resources.length; i++){
+						if(resId == resources[i].resId){
+							resources[i].accounts = new Array();
+							break;
+						}
+					}
+					$("input[name='resources']").val(JSON.stringify(resources));
+				});
+				
+				$(".removeRuleAccount").live('click',function(){
+					var resId = $(this).parent().parent().parent().parent().parent().children().eq(0).find("input").val();
+					var account = $(this).prev().text().trim();
+					
+					$(this).parent().remove();
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					resources = eval(resources);
+					for(var i = 0; i < resources.length; i++){
+						if(resId == resources[i].resId){
+							var accounts = resources[i].accounts;
+							for(var j = 0; j < accounts.length; j++){
+								if(account == accounts[j].account){
+									accounts.splice(j,1);
+									break;
+								}
+							}
+							break;
+						}
+					}
+					$("input[name='resources']").val(JSON.stringify(resources));
+				});
+				
+				$(".delRuleProtocolSelect").live('click',function(){
+					var resId = $(this).parent().parent().parent().parent().parent().children().eq(0).find("input").val();
+					$(this).parent().prev().prevAll().remove();
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					resources = eval(resources);
+					for(var i = 0; i < resources.length; i++){
+						if(resId == resources[i].resId){
+							resources[i].protocols = new Array();
+							break;
+						}
+					}
+					$("input[name='resources']").val(JSON.stringify(resources));
+				});
+				
+				$(".removeRuleProtocol").live('click',function(){
+					var resId = $(this).parent().parent().parent().parent().parent().children().eq(0).find("input").val();
+					var protocol = $(this).prev().text().trim();
+					$(this).parent().remove();
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					resources = eval(resources);
+					for(var i = 0; i < resources.length; i++){
+						if(resId == resources[i].resId){
+							var protocols = resources[i].protocols;
+							for(var j = 0; j < protocols.length; j++){
+								if(protocol == protocols[j]){
+									protocols.splice(j,1);
+									break;
+								}
+							}
+							break;
+						}
+					}
+					$("input[name='resources']").val(JSON.stringify(resources));
+				});
+				
+				$(".addRuleProtocolSelect").live('click',function(){
+					$("#protocolWindow").modal("show");
+					var resId = $(this).parent().parent().parent().parent().parent().children().eq(0).find("input").val();
+					$("#protocolWindow").find("#checkId").val(resId);
+					
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					resources = eval(resources);
+					var protocols = new Array();
+					for(var i = 0; i < resources.length; i++){
+						if(resId == resources[i].resId){
+							protocols = resources[i].protocols;
+							break;
+						}
+					}
+					
+					$.ajax({
+						url:"/rule/queryProtocol",
+						type:'get',
+						data:'resId=' + resId,
+						dataType:'JSON',
+						async:false,
+						success:function(result){
+							$("#protocolWindow .modal-body").html("");
+							$.each(result,function(i,item){
+								var checked = false;
+								for(var j = 0;j < protocols.length;j++){
+									if(item == protocols[j]){
+										checked = true;
+										break;
+									}
+								}
+								var element = "<input type=\"checkbox\" " + ((checked == true) ? "checked='checked'" : '') + " name=\"useProtocols\" class=\"checkbox protocolSpan\" value=\"" + item + "\" style=\"margin-top: -1px;\"/><span class=\"protocolSpan hand\">" + item + "</span>";
+								$("#protocolWindow .modal-body").append(element);
+							});
+						}
+					});
+				});
+				
+				$(".protocolSpan").live('click',function(){
+					if(!$(this).prev().prop('checked')){
+						$(this).prev().prop('checked','checked');
+					}else{
+						$(this).prev().prop('checked',false);
+					}
+				});
+				
+				$("#accountWindow .btn-primary").on('click',function(){
+					$("#accountWindow").modal("hide");
+					var resId = $("input[name='resId']").val();
+					
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					resources = eval(resources);
+					
+					var accounts = new Array();
+					for(var i = 0; i < resources.length; i++){
+						if(resId == resources[i].resId){
+							accounts = resources[i].accounts;
+							break;
+						}
+					}
+					
+					$("input[name='accIds']:checked").each(function(){
+						var id = $(this).val();
+						var name = $(this).parent().next().text().trim();
+						var accObj = {'id':id,'account':name};
+						var element = "<li class=\"select2-search-choice\"><div class=\"hand ruleAccount\">" + name
+						+ "</div><a class=\"select2-search-choice-close removeRuleAccount\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+						$("input[name='resIds']").each(function(){
+							if(resId == $(this).val()){
+								var flag = true;
+								for(var index = 0; index < accounts.length;index++){
+									if(id == accounts[index].id){
+										flag = false;
+										break;
+									}
+								}
+								if(flag){
+									accounts.push(accObj);
+									$(this).parent().parent().children().eq(5).find(".addRuleAccountSelect").parent().before(element);
+								}
+							}
+						});
+					});
+					$("input[name='resources']").val(JSON.stringify(resources));
+					
+					$("#accountWindow .modal-body").html("");
+				});
+				
 				$("#resourceWindow .btn-primary").on('click',function(){
 					$("#resourceWindow").modal("hide");
+					var resources = $("input[name='resources']").val();
+					if(resources == ''){
+						resources = '[]';
+					}
+					
+					resources = eval(resources);
 					
 					$("input[name='resourceIds']:checked").each(function(){
 						var id = $(this).val();
@@ -390,77 +671,97 @@
 						var ip = $(this).parent().parent().children().eq(2).text().trim();
 						var type = $(this).parent().parent().children().eq(3).text().trim();
 						var os = $(this).parent().parent().children().eq(4).text().trim();
+						var resObj = {'resId':id};
+						var accounts = new Array();
+						var protocols = new Array();
 						
-						var element = "<tr class=\"gradeA odd\">";
-						element += "<td class=\"\" style=\"vertical-align:middle;\">";
-						element += "<input class=\"checkbox\" name=\"resIds\" value=\"" + id + "\" style=\"width: 18px;background-color: #FFF;\" type=\"checkbox\">";
-						element += "</td><td class=\"\" style=\"vertical-align:middle;\">" + name + "</td>";
-						element += "<td class=\"\" style=\"vertical-align:middle;\">" + ip + "</td>";
-						element += "<td class=\"\" style=\"vertical-align:middle;\">" + type + "</td>";
-						element += "<td class=\"\" style=\"vertical-align:middle;\">" + os + "</td>";
-						element += "<td class=\"\">";
-						element += "<div class=\"select2-container select2-container-multi\" id=\"accountSelect\" style=\"width:100%;\">";
-						element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
-						
-						$.ajax({
-							url:"/rule/queryAccountByResId",
-							type:"get",
-							data:"resId=" + id,
-							dataType:"JSON",
-							async:false,
-							success:function(result){
-								$.each(result,function(i,item){
-									element += "<li class=\"select2-search-choice\"><div class=\"hand account\">" + item.name + "</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
-								});
+						var resAdd = true;
+						for(var k = 0; k < resources.length; k++){
+							if(id == resources[k].resId){
+								resAdd = false;
+								break;
 							}
-						});
-						
-						//element += "<li class=\"select2-search-choice\"><div class=\"hand account\">root</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
-						//element += "<li class=\"select2-search-choice\"><div class=\"hand account\">nemo</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
-								
-						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
-						element += "<img alt=\"\" class=\"addAccountSelect\" src=\"/images/icon/add_icon.png\">";
-						element += "</li>";
-						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
-						element += "<img alt=\"\" class=\"delAccountSelect\" src=\"/images/icon/delete_icon.png\">";
-						element += "</li>";
-						element += "</ul>";
-						element += "</div>";
-						element += "</td>";
-						element += "<td class=\"\">";
-						element += "<div class=\"select2-container select2-container-multi\" id=\"protocolSelect\" style=\"width:100%;\">";
-						element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
-						
-						if($(this).parent().find("input[name='useSsh']").val() == 1){
-							element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">SSH</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
 						}
-						
-						if($(this).parent().find("input[name='useSftp']").val() == 1){
-							element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">SFTP</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
-						}
-						
-						if($(this).parent().find("input[name='useRdp']").val() == 1){
-							element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">RDP</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
-						}
-						
-						//element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">SFTP</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+						if(resAdd){
+							var element = "<tr class=\"gradeA odd\">";
+							element += "<td class=\"\" style=\"vertical-align:middle;\">";
+							element += "<input class=\"checkbox\" name=\"resIds\" value=\"" + id + "\" style=\"width: 18px;background-color: #FFF;\" type=\"checkbox\">";
+							element += "</td><td class=\"\" style=\"vertical-align:middle;\">" + name + "</td>";
+							element += "<td class=\"\" style=\"vertical-align:middle;\">" + ip + "</td>";
+							element += "<td class=\"\" style=\"vertical-align:middle;\">" + type + "</td>";
+							element += "<td class=\"\" style=\"vertical-align:middle;\">" + os + "</td>";
+							element += "<td class=\"\">";
+							element += "<div class=\"select2-container select2-container-multi\" id=\"accountSelect\" style=\"width:100%;\">";
+							element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
+							
+							$.ajax({
+								url:"/rule/queryAccountByResId",
+								type:"get",
+								data:"resId=" + id,
+								dataType:"JSON",
+								async:false,
+								success:function(result){
+									$.each(result,function(i,item){
+										var accObj = {'id':item.id,'account':item.name};
+										accounts.push(accObj);
+										element += "<li class=\"select2-search-choice\"><div class=\"hand ruleAccount\">" + item.name + "</div><a class=\"select2-search-choice-close removeRuleAccount\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+									});
+									resObj.accounts = accounts;
+								}
+							});
+							
+							//element += "<li class=\"select2-search-choice\"><div class=\"hand account\">root</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+							//element += "<li class=\"select2-search-choice\"><div class=\"hand account\">nemo</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
 									
-						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
-						element += "<img alt=\"\" class=\"addProtocolSelect\" src=\"/images/icon/add_icon.png\">";
-						element += "</li>";
-						element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
-						element += "<img alt=\"\" class=\"delProtocolSelect\" src=\"/images/icon/delete_icon.png\">";
-						element += "</li>";
-						element += "</ul>";
-						element += "</div>";
-						element += "</td>";
-						element += "<td class=\"\" style=\"vertical-align:middle;\">";
-						element += "<a class=\"glyphicons no-js circle_remove\" href=\"#\" title=\"删除\" onclick=\"delRes(this)\"><i></i></a>";
-						element += "</td>";
-						element += "</tr>";
-					$("#resourceBody").append(element);
-						
+							element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+							element += "<img alt=\"\" class=\"addRuleAccountSelect\" src=\"/images/icon/add_icon.png\">";
+							element += "</li>";
+							element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+							element += "<img alt=\"\" class=\"delRuleAccountSelect\" src=\"/images/icon/delete_icon.png\">";
+							element += "</li>";
+							element += "</ul>";
+							element += "</div>";
+							element += "</td>";
+							element += "<td class=\"\">";
+							element += "<div class=\"select2-container select2-container-multi\" id=\"protocolSelect\" style=\"width:100%;\">";
+							element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
+							
+							if($(this).parent().find("input[name='useSsh']").val() == 1){
+								protocols.push('SSH');
+								element += "<li class=\"select2-search-choice\"><div class=\"hand ruleProtocol\">SSH</div><a class=\"select2-search-choice-close removeRuleProtocol\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
+							}
+							
+							if($(this).parent().find("input[name='useSftp']").val() == 1){
+								protocols.push('SFTP');
+								element += "<li class=\"select2-search-choice\"><div class=\"hand ruleProtocol\">SFTP</div><a class=\"select2-search-choice-close removeRuleProtocol\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
+							}
+							
+							if($(this).parent().find("input[name='useRdp']").val() == 1){
+								protocols.push('RDP');
+								element += "<li class=\"select2-search-choice\"><div class=\"hand ruleProtocol\">RDP</div><a class=\"select2-search-choice-close removeRuleProtocol\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";							
+							}
+							
+							resObj.protocols = protocols;
+							resources.push(resObj);
+							//element += "<li class=\"select2-search-choice\"><div class=\"hand protocol\">SFTP</div><a class=\"select2-search-choice-close\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+										
+							element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+							element += "<img alt=\"\" class=\"addRuleProtocolSelect\" src=\"/images/icon/add_icon.png\">";
+							element += "</li>";
+							element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+							element += "<img alt=\"\" class=\"delRuleProtocolSelect\" src=\"/images/icon/delete_icon.png\">";
+							element += "</li>";
+							element += "</ul>";
+							element += "</div>";
+							element += "</td>";
+							element += "<td class=\"\" style=\"vertical-align:middle;\">";
+							element += "<a class=\"glyphicons no-js circle_remove\" href=\"#\" title=\"删除\" onclick=\"delRes(this)\"><i></i></a>";
+							element += "</td>";
+							element += "</tr>";
+							$("#resourceBody").append(element);
+						}
 					});
+					$("input[name='resources']").val(JSON.stringify(resources));
 					$("#resourceWindow .modal-body").html("");
 				});
 				
@@ -557,13 +858,31 @@
 			}
 			
 			function delRes(obj){
+				var resId = $(obj).parent().parent().children().eq(0).find("input").val();
 				$(obj).parent().parent().remove();
+				var resources = $("input[name='resources']").val();
+				if(resources == ''){
+					resources = '[]';
+				}
+				resources = eval(resources);
+				
+				var accounts = new Array();
+				for(var i = 0; i < resources.length; i++){
+					if(resId == resources[i].resId){
+						resources.splice(i,1);
+						break;
+					}
+				}
+
+				$("input[name='resources']").val(JSON.stringify(resources));
 			}
 			
 			function delAllRes(){
 				$("input[name='resIds']:checked").each(function(){
 					$(this).parent().parent().remove();
 				});
+				$("input[name='resources']").val("[]");
+				
 			}
 		</script>
 	</body>

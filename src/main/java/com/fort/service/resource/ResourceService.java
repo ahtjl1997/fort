@@ -34,4 +34,6 @@ public interface ResourceService {
 	public List<ResType> queryResType();
 	
 	public List<Account> queryAccountByResId(int resId);
+	
+	public SearchResult<Account> queryAccount(Map<String,Object> map,int startIndex,int pageSize);
 }

@@ -165,6 +165,7 @@ public class ResourceServiceImpl implements ResourceService {
 		try {
 			return resourceDao.delete(resId);
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("删除资源信息时出现错误，" + e.getMessage());
 		}
 	}
@@ -185,6 +186,7 @@ public class ResourceServiceImpl implements ResourceService {
 				resourceDao.delete(id);
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("删除资源信息时出现错误，" + e.getMessage());
 		}
 	}
@@ -198,6 +200,7 @@ public class ResourceServiceImpl implements ResourceService {
 		try {
 			return resourceDao.updateStatus(map);
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("修改资源状态时出现错误，" + e.getMessage());
 		}
 	}
@@ -216,6 +219,7 @@ public class ResourceServiceImpl implements ResourceService {
 				resourceDao.updateStatus(map);
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("修改资源状态时出现错误，" + e.getMessage());
 		}
 	}
@@ -225,6 +229,7 @@ public class ResourceServiceImpl implements ResourceService {
 		try {
 			return resourceTypeDao.queryOsByTypeId(typeId);
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("查询资源操作系统信息时出现错误" + e.getMessage());
 		}
 	}
@@ -234,6 +239,7 @@ public class ResourceServiceImpl implements ResourceService {
 		try {
 			return resourceTypeDao.queryType();
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("查询资源类型时出现错误" + e.getMessage());
 		}
 	}
@@ -243,7 +249,28 @@ public class ResourceServiceImpl implements ResourceService {
 		try {
 			return accountDao.queryByResId(resId);
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("查询资源类型时出现错误" + e.getMessage());
+		}
+	}
+	
+	@Override
+	public SearchResult<Account> queryAccount(Map<String,Object> map,int startIndex,int pageSize){
+		SearchResult<Account> sr = new SearchResult<Account>();
+		Page page = new Page(pageSize, startIndex);
+		try {
+			int totalCount = accountDao.count(map);
+			page.setTotalCount(totalCount);
+			if(totalCount > 0) {
+				RowBounds rb = new RowBounds(startIndex, pageSize);
+				List<Account> list = accountDao.query(map, rb);
+				sr.setList(list);
+			}
+			sr.setPage(page);
+			return sr;
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("自定义条件查询账号信息时出现错误，" + e.getMessage());
 		}
 	}
 

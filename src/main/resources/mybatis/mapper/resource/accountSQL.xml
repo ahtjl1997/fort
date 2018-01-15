@@ -67,4 +67,30 @@
 			DELETE FROM `account` WHERE `id` = #{id}
 		]]>
 	</delete>
+	<select id="query" parameterType="java.util.HashMap" resultMap="accountResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `password`,
+			  `res_id`,
+			  `type`
+			FROM `account` WHERE res_id = #{resId}
+		]]>
+		<if test="keyword != null and keyword != ''">
+			<![CDATA[
+				AND `name` LIKE CONCAT('%',#{keyword},'%')
+			]]>
+		</if>
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(`id`) FROM `account` WHERE res_id = #{resId}
+		]]>
+		<if test="keyword != null and keyword != ''">
+			<![CDATA[
+				AND `name` LIKE CONCAT('%',#{keyword},'%')
+			]]>
+		</if>
+	</select>
 </mapper>

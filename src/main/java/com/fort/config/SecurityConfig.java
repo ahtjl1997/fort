@@ -81,7 +81,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//授权模块
 		.antMatchers("/rule/query","/rule/edit","/rule/insertPage","/rule/insert",
 				"/rule/update","/rule/delete","/rule/deletes","/rule/checkName",
-				"/rule/queryResource","/rule/queryUser","/rule/queryAccountByResId").hasRole(RoleConfig.VIEW_RULE)
+				"/rule/queryResource","/rule/queryUser","/rule/queryAccountByResId",
+				"/rule/queryAccount","/rule/queryProtocol").hasRole(RoleConfig.VIEW_RULE)
 		
 		.and().headers().frameOptions().disable()
 		

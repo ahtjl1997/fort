@@ -1,6 +1,9 @@
 package com.fort.dao.resource;
 
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.RowBounds;
 
 import com.fort.module.resource.Account;
 
@@ -15,4 +18,8 @@ public interface AccountDao {
 	public int update(Account a);
 	
 	public int delete(int id);
+	
+	public List<Account> query(Map<String,Object> map,RowBounds rb);
+	
+	public int count(Map<String,Object> map);
 }

@@ -15,13 +15,14 @@
 		<div class="widget">
 			<!-- Widget heading -->
 			<div class="widget-head">
-				<h4 class="heading">设备列表</h4>
+				<h4 class="heading">账号列表</h4>
 			</div>
 			<!-- // Widget heading END -->
 			<div class="widget-body">
 				<div class="row-fluid">
-					<div class="span12">
-						<form th:action="@{/rule/queryResource}" method="post">
+ 						<div class="span12">
+ 							<form th:action="@{/rule/queryAccount}" method="post">
+ 							<input type="hidden" name="resId" th:value="${resId}"/>
 							<!-- Table -->
 							<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline" role="grid">
 								<div class="row-fluid">
@@ -35,56 +36,48 @@
 									</div>
 								</div>
 								<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+										
 									<!-- Table heading -->
 									<thead>
 										<tr role="row">
 											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 10px;">
 											  <div >
-												<input type="checkbox" class="checkbox" id="checkAllResource" style="width: 18px;"/>
+												<input type="checkbox" class="checkbox" id="checkAllAccount" style="width: 18px;"/>
 											  </div>
 											</th>
-											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">设备名称</th>
-											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">IP地址</th>
-											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">设备类型</th>
-											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">操作系统</th>
-											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 60px;">设备状态</th>
-											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">创建时间</th>
+											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">账号名称</th>
+											<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">账号类型</th>
 										</tr>
 									</thead>
+									
 									<!-- // Table heading END -->
+									
 									<!-- Table body -->
 									
 									<tbody role="alert" aria-live="polite" aria-relevant="all">
 										<tr class="gradeA odd" th:if="${#lists.isEmpty(list)}">
-											<td colspan="7" style="text-align: center;">没有查询到匹配的信息</td>
+											<td colspan="3" style="text-align: center;">没有查询到匹配的信息</td>
 										</tr>
-										<tr class="gradeA odd" th:each="r:${list}">
+										<tr class="gradeA odd" th:each="acc:${list}">
 											<td class="">
-												<input type="checkbox" class="checkbox" th:id="${'resourceId_' + r.id}" name="resourceIds" style="width: 18px;background-color: #FFF;" th:value="${r.id}" />
-												<input type="hidden" name="useSsh" th:value="${r.useSsh}">
-												<input type="hidden" name="useSftp" th:value="${r.useSftp}">
-												<input type="hidden" name="useRdp" th:value="${r.useRdp}">
+												<input type="checkbox" class="checkbox" th:id="${'accId_' + acc.id}" name="accIds" style="width: 18px;background-color: #FFF;" th:value="${acc.id}" />
 											</td>
-											<td class="" th:text="${r.name}"></td>
-											<td class="" th:text="${r.ip}"></td>
-											<td class="" th:text="${r.typeName}"></td>
-											<td class="" th:text="${r.osName}"></td>
-											<td class="" >
-												<a th:if="${r.status==1}" href="#" title="激活" class="glyphicons no-js ok_2"><i></i></a>
-												<a th:if="${r.status==0}" href="#" title="锁定" class="glyphicons no-js remove_2"><i></i></a>
+											<td class="" th:text="${acc.name}"></td>
+											<td class="" th:text="${acc.type eq 0 ? '普通账号' : '管理员'}">
+												
 											</td>
-											<td class="" th:text="${r.createTime==null ? '' : #dates.format(r.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
 										</tr>
 									</tbody>
+									<!-- // Table body END -->
 								</table>
 								<div class="row-fluid">
-									<div th:include="pages/commons/ruleResourcePage :: ruleResourcePage"></div>
+									<div th:include="pages/commons/ruleAccountPage :: ruleAccountPage"></div>
 								</div>
 							</div>
 						</form>
-					</div>
- 				</div>
- 			</div>
+ 						</div>
+				</div>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$(document).ready(function(){
@@ -93,13 +86,15 @@
 						query();
 					}
 				});
-				$("#checkAllResource").click(function(){
+				
+				$("#checkAllAccount").click(function(){
 					if($(this).prop("checked")){
-						$("input[name='resourceIds']").prop("checked",true);
+						$("input[name='accIds']").prop("checked",true);
 					}else{
-						$("input[name='resourceIds']").prop("checked",false);
+						$("input[name='accIds']").prop("checked",false);
 					}
 				});
+				var resId = $("input[name='resId']").val();
 				
 				var resources = $("input[name='resources']").val();
 				if(resources == ''){
@@ -107,7 +102,13 @@
 				}
 				resources = eval(resources);
 				for(var index = 0;index < resources.length;index++){
-					$("#resourceId_" + resources[index].resId).prop('checked','checked');
+					if(resId == resources[index].resId){
+						var accounts = resources[index].accounts;
+						for(var j = 0; j < accounts.length; j++){
+							$("#accId_" + accounts[j].id).prop("checked","checked");
+						}
+						break;
+					}
 				}
 			});
 		</script>
