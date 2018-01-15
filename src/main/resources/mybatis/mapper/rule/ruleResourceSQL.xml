@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ruleResource">
+	<resultMap type="ruleInfo" id="resourceResult">
+		<result property="id" 				column="res_id" 			javaType="int"/>
+		<result property="relId" 			column="id" 				javaType="int"/>
+		<result property="name" 			column="name" 				javaType="java.lang.String"/>
+		<result property="ip"	 			column="ip" 				javaType="java.lang.String"/>
+		<result property="typeName" 		column="type_name" 			javaType="java.lang.String"/>
+		<result property="osName" 			column="os_name" 			javaType="java.lang.String"/>
+		<result property="useSsh" 			column="use_ssh" 			javaType="int"/>
+		<result property="useSftp" 			column="use_sftp" 			javaType="int"/>
+		<result property="useRdp" 			column="use_rdp" 			javaType="int"/>
+	</resultMap>
+	<select id="query" parameterType="int" resultMap="resourceResult">
+		<![CDATA[
+			SELECT
+			  rrr.`res_id`,
+			  rrr.id,
+			  res.name,
+			  res.ip,
+			  res.type_name,
+			  res.os_name,
+			  CASE  WHEN res.use_ssh = 1 THEN rrr.`use_ssh` ELSE 0 END AS use_ssh,
+			  CASE  WHEN res.use_sftp = 1 THEN rrr.`use_sftp` ELSE 0 END AS use_sftp,
+			  CASE  WHEN res.use_rdp = 1 THEN rrr.`use_rdp` ELSE 0 END AS use_rdp
+			FROM `rel_rule_resource` rrr LEFT JOIN (
+			  SELECT r.id,r.`name`,r.ip,rt.`name` AS type_name,o.`name` AS os_name, r.`use_ssh`,r.`use_sftp`,r.`use_rdp`
+			
+			  FROM resource r LEFT JOIN res_type rt ON r.`type_id` = rt.`id` LEFT JOIN os o ON r.`os_id` = o.`id`
+			) res ON rrr.`res_id` = res.`id` WHERE rrr.rule_id = #{ruleId}
+		]]>
+	</select>
+	<insert id="insert" parameterType="ruleInfo" >
+		<![CDATA[
+			INSERT INTO `rel_rule_resource`
+            (
+             `res_id`,
+             `use_ssh`,
+             `use_sftp`,
+             `use_rdp`,
+             `rule_id`)
+			VALUES (
+			        #{id},
+			        #{useSsh},
+			        #{useSftp},
+			        #{useRdp},
+			        #{ruleId});
+		]]>
+		<selectKey keyProperty="relId" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<delete id="delete" parameterType="java.util.HashMap">
+		<![CDATA[
+			DELETE `rel_rule_resource` WHERE rule_id = #{ruleId} AND res_id = #{resId}
+		]]>
+	</delete>
+	<update id="update" parameterType="ruleInfo">
+		<![CDATA[
+			UPDATE `rel_rule_resource`
+			SET 
+			  `use_ssh` = #{useSsh},
+			  `use_sftp` = #{useSftp},
+			  `use_rdp` = #{useRdp}
+			WHERE rule_id = #{ruleId} AND res_id = #{resId}
+		]]>
+	</update>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ruleUser">
+	<resultMap type="employee" id="employeeResult">
+		<result property="id" 			column="emp_id" 			javaType="int"/>
+		<result property="name" 		column="name" 				javaType="java.lang.String"/>
+		<result property="username" 	column="login_name" 		javaType="java.lang.String"/>
+	</resultMap>
+	<select id="query" parameterType="int" resultMap="employeeResult">
+		<![CDATA[
+			SELECT
+			  rre.`emp_id`,
+			  e.`login_name`,
+			  e.`name`
+			FROM `rel_rule_employee` rre LEFT JOIN employee e ON rre.`emp_id` = e.`id` WHERE rre.rule_id = #{ruleId}
+		]]>
+	</select>
+	<insert id="insert" parameterType="java.util.HashMap">
+		<![CDATA[
+			INSERT INTO `rel_rule_employee` (`emp_id`, `rule_id`) VALUES (#{empId}, #{ruleId})
+		]]>
+	</insert>
+	<delete id="delete" parameterType="java.util.HashMap">
+		<![CDATA[
+			DELETE FROM `rel_rule_employee` WHERE emp_id = #{empId} AND rule_id = #{ruleId}
+		]]>
+	</delete>
+</mapper>

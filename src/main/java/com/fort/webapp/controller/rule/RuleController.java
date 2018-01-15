@@ -76,7 +76,7 @@ public class RuleController {
 	}
 	
 	@RequestMapping("/edit")
-	public String edit(@ModelAttribute("rule") Rule rule,@RequestParam(name="id",defaultValue="0") int ruleId) {
+	public String edit(@ModelAttribute("rule") Rule rule,@RequestParam(name="id",defaultValue="0") int ruleId,ModelMap model) {
 		if(ruleId == 0) {
 			throw new RuntimeException("无效的授权ID");
 		}
@@ -91,7 +91,9 @@ public class RuleController {
 	@RequestMapping("/insert")
 	public String insert(@RequestParam(name="name",defaultValue="") String name,
 			@RequestParam(name="memo",defaultValue="") String memo,
-			@RequestParam(name="status",defaultValue="0") int status) {
+			@RequestParam(name="status",defaultValue="0") int status,
+			@RequestParam(name="users",defaultValue="[]") String users,
+			@RequestParam(name="resources",defaultValue="[]") String resources) {
 		if(GenericValidator.isBlankOrNull(name)) {
 			throw new RuntimeException("请输入授权名称");
 		}
@@ -117,7 +119,9 @@ public class RuleController {
 	public String update(@RequestParam(name="id",defaultValue="0") int ruleId,
 			@RequestParam(name="name",defaultValue="") String name,
 			@RequestParam(name="memo",defaultValue="") String memo,
-			@RequestParam(name="status",defaultValue="0") int status) {
+			@RequestParam(name="status",defaultValue="0") int status,
+			@RequestParam(name="users",defaultValue="[]") String users,
+			@RequestParam(name="resources",defaultValue="[]") String resources) {
 		
 		if(ruleId == 0) {
 			throw new RuntimeException("无效的授权ID");
