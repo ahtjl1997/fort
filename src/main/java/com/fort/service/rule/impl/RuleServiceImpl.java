@@ -1,4 +1,4 @@
-package com.fort.service.rule;
+package com.fort.service.rule.impl;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fort.dao.rule.RuleDao;
 import com.fort.module.rule.Rule;
+import com.fort.service.rule.RuleService;
 import com.util.FortObjectUtil;
 import com.util.page.Page;
 import com.util.page.SearchResult;
