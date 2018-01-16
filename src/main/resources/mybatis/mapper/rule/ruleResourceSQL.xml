@@ -67,7 +67,7 @@
 			  `use_ssh` = #{useSsh},
 			  `use_sftp` = #{useSftp},
 			  `use_rdp` = #{useRdp}
-			WHERE rule_id = #{ruleId} AND res_id = #{resId}
+			WHERE rule_id = #{ruleId} AND res_id = #{id}
 		]]>
 	</update>
 </mapper>

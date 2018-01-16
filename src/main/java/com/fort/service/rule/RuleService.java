@@ -1,8 +1,11 @@
 package com.fort.service.rule;
 
+import java.util.List;
 import java.util.Map;
 
+import com.fort.module.employee.Employee;
 import com.fort.module.rule.Rule;
+import com.fort.module.rule.RuleInfo;
 import com.util.page.SearchResult;
 
 public interface RuleService {
@@ -24,4 +27,12 @@ public interface RuleService {
 	public int delete(int id);
 	
 	public void delete(int[] idArr);
+	
+	public List<RuleInfo> queryResource(int ruleId);
+	
+	public List<Employee> queryUser(int ruleId);
+	
+	public void insertResource(int ruleId,List<RuleInfo> resList);
+	
+	public void insertUser(int ruleId,int[] empIdArr);
 }

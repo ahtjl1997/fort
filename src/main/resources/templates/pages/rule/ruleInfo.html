@@ -150,7 +150,7 @@
 											</ul>
 										</div>
 									</div>
-									<input type="hidden" name="users" value=""/>
+									<input type="hidden" name="users" th:value="${users}"/>
 								</div>
 							</div>
 						</div>
@@ -240,7 +240,7 @@
 													</tr> -->
 												</tbody>
 											</table>
-											<input type="hidden" name="resources" value=""/>
+											<input type="hidden" name="resources" th:value="${resources}"/>
 										</div>
 									</div>
 								</div>
@@ -318,6 +318,82 @@
 		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
+				
+				//初始化用户信息
+				var users = $("input[name='users']").val();
+				if(users == ''){
+					users = '[]';
+				}
+				users = eval(users);
+				
+				$.each(users,function(index,item){
+					var element = "<li class=\"select2-search-choice\"><div class=\"hand user\">" + item.name + "(" + item.username + ")</div>" +
+					"<a class=\"select2-search-choice-close removeUser\" index=\"" + item.id + "\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+					$(".addUserSelect").parent().before(element);
+				});
+				
+				//初始化设备信息
+				var resources = $("input[name='resources']").val();
+				if(resources == ''){
+					resources = '[]';
+				}
+				resources = eval(resources);
+				$.each(resources,function(index,item){
+					var id = item.resId;
+					var name = item.name;
+					var type = item.type;
+					var os = item.os;
+					var ip = item.ip;
+					var accounts = item.accounts;
+					var protocols = item.protocols;
+					
+					var element = "<tr class=\"gradeA odd\">";
+					element += "<td class=\"\" style=\"vertical-align:middle;\">";
+					element += "<input class=\"checkbox\" name=\"resIds\" value=\"" + id + "\" style=\"width: 18px;background-color: #FFF;\" type=\"checkbox\">";
+					element += "</td><td class=\"\" style=\"vertical-align:middle;\">" + name + "</td>";
+					element += "<td class=\"\" style=\"vertical-align:middle;\">" + ip + "</td>";
+					element += "<td class=\"\" style=\"vertical-align:middle;\">" + type + "</td>";
+					element += "<td class=\"\" style=\"vertical-align:middle;\">" + os + "</td>";
+					element += "<td class=\"\">";
+					element += "<div class=\"select2-container select2-container-multi\" id=\"accountSelect\" style=\"width:100%;\">";
+					element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
+					$.each(accounts,function(i,item){
+						element += "<li class=\"select2-search-choice\"><div class=\"hand ruleAccount\">" + item.account + "</div><a class=\"select2-search-choice-close removeRuleAccount\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+					});
+					
+					element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+					element += "<img alt=\"\" class=\"addRuleAccountSelect\" src=\"/images/icon/add_icon.png\">";
+					element += "</li>";
+					element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+					element += "<img alt=\"\" class=\"delRuleAccountSelect\" src=\"/images/icon/delete_icon.png\">";
+					element += "</li>";
+					element += "</ul>";
+					element += "</div>";
+					element += "</td>";
+					element += "<td class=\"\">";
+					element += "<div class=\"select2-container select2-container-multi\" id=\"protocolSelect\" style=\"width:100%;\">";
+					element += "<ul class=\"select2-choices\" style=\"border-radius:4px;border-color: #D8D9DA;min-height: 30px;\">";
+					
+					$.each(protocols,function(i,item){
+						element += "<li class=\"select2-search-choice\"><div class=\"hand ruleProtocol\">" + item + "</div><a class=\"select2-search-choice-close removeRuleProtocol\" href=\"#\" onclick=\"return false;\" tabindex=\"-1\"></a></li>";
+					});
+					
+					element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+					element += "<img alt=\"\" class=\"addRuleProtocolSelect\" src=\"/images/icon/add_icon.png\">";
+					element += "</li>";
+					element += "<li class=\"select2-search-choice\" style=\"padding-left: 0px;padding-right: 0px;cursor:pointer;border: 0px;background: #ffffff;\">";
+					element += "<img alt=\"\" class=\"delRuleProtocolSelect\" src=\"/images/icon/delete_icon.png\">";
+					element += "</li>";
+					element += "</ul>";
+					element += "</div>";
+					element += "</td>";
+					element += "<td class=\"\" style=\"vertical-align:middle;\">";
+					element += "<a class=\"glyphicons no-js circle_remove\" href=\"#\" title=\"删除\" onclick=\"delRes(this)\"><i></i></a>";
+					element += "</td>";
+					element += "</tr>";
+					$("#resourceBody").append(element);
+				})
+				
 				//设备名称及IP地址校验
 				$.validator.setDefaults(
 				{
@@ -775,10 +851,10 @@
 					users = eval(users);
 					$("input[name='userIds']:checked").each(function(){
 						var id = $(this).val();
-						var username = $(this).parent().next().text().trim();
+						var loginName = $(this).parent().next().text().trim();
 						var name = $(this).parent().next().next().text().trim();
-						username = name + "(" + username + ")";
-						var userObj = {'id':id,'name':name,'username':username};
+						var username = name + "(" + loginName + ")";
+						var userObj = {'id':id,'name':name,'username':loginName};
 						var flag = true;
 						
 						for(var index = 0;index < users.length;index++){
@@ -796,6 +872,7 @@
 					$("input[name='users']").val(JSON.stringify(users));
 					$("#userWindow .modal-body").html("");
 				});
+				
 				$(".removeUser").live('click',function(){
 					var obj = $(this);
 					var users = $("input[name='users']").val();

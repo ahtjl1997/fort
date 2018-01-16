@@ -38,4 +38,10 @@ public class RuleInfo extends Resource {
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
 	}
+	
+	public void copy(RuleInfo r) {
+		this.setUseSsh(r.getUseSsh());
+		this.setUseSftp(r.getUseSftp());
+		this.setUseRdp(r.getUseRdp());
+	}
 }

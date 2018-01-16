@@ -1,5 +1,7 @@
 package com.fort.webapp.controller.rule;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +10,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.validator.GenericValidator;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,6 +27,7 @@ import com.fort.module.resource.Account;
 import com.fort.module.resource.Resource;
 import com.fort.module.role.Role;
 import com.fort.module.rule.Rule;
+import com.fort.module.rule.RuleInfo;
 import com.fort.service.employee.EmployeeGroupService;
 import com.fort.service.employee.EmployeeService;
 import com.fort.service.resource.ResourceService;
@@ -76,7 +82,7 @@ public class RuleController {
 	}
 	
 	@RequestMapping("/edit")
-	public String edit(@ModelAttribute("rule") Rule rule,@RequestParam(name="id",defaultValue="0") int ruleId,ModelMap model) {
+	public String edit(@ModelAttribute("rule") Rule rule,@RequestParam(name="id",defaultValue="0") int ruleId,ModelMap model) throws JSONException {
 		if(ruleId == 0) {
 			throw new RuntimeException("无效的授权ID");
 		}
@@ -85,6 +91,58 @@ public class RuleController {
 			throw new RuntimeException("该授权不存在或已被删除");
 		}
 		rule.copy(r);
+		
+		List<RuleInfo> resList = ruleService.queryResource(ruleId);
+		List<Employee> empList = ruleService.queryUser(ruleId);
+		JSONArray resArr = new JSONArray();
+		JSONArray userArr = new JSONArray();
+		if(FortObjectUtil.isNotEmpty(resList)) {
+			for(RuleInfo ri : resList) {
+				JSONObject json = new JSONObject();
+				json.put("resId", ri.getId());
+				json.put("name", ri.getName());
+				json.put("ip", ri.getIp());
+				json.put("type", ri.getTypeName());
+				json.put("os", ri.getOsName());
+				Collection<Account> accList = ri.getAccountList();
+				JSONArray accArr = new JSONArray();
+				Set<String> protocols = new HashSet<String>();
+				if(FortObjectUtil.isNotEmpty(accList)) {
+					for(Account acc : accList) {
+						JSONObject accJson = new JSONObject();
+						accJson.put("id", acc.getId());
+						accJson.put("account", acc.getName());
+						accArr.put(accJson);
+					}
+				}
+				
+				if(ri.getUseRdp() == 1) {
+					protocols.add("RDP");
+				}
+				if(ri.getUseSsh() == 1) {
+					protocols.add("SSH");
+				}
+				if(ri.getUseSftp() == 1) {
+					protocols.add("SFTP");
+				}
+				
+				json.put("accounts", accArr);
+				json.put("protocols", protocols);
+				resArr.put(json);
+			}
+		}
+		
+		if(FortObjectUtil.isNotEmpty(empList)) {
+			for(Employee e : empList) {
+				JSONObject user = new JSONObject();
+				user.put("id", e.getId());
+				user.put("name", e.getName());
+				user.put("username", e.getUsername());
+				userArr.put(user);
+			}
+		}
+		model.put("users", userArr.toString());
+		model.put("resources", resArr.toString());
 		return "pages/rule/ruleInfo";
 	}
 	
@@ -101,6 +159,62 @@ public class RuleController {
 			throw new RuntimeException("状态信息错误");
 		}
 		
+		int[] empIdArr = {};
+		try {
+			JSONArray userArr = new JSONArray(users);
+			int userLen = userArr.length();
+			if(userLen > 0) {
+				empIdArr = new int[userLen];
+				for(int index = 0;index < userLen;index++) {
+					JSONObject user = userArr.getJSONObject(index);
+					empIdArr[index] = user.getInt("id");
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new RuntimeException("用户信息错误");
+		}
+		
+		List<RuleInfo> ruleInfoList = new ArrayList<RuleInfo>();
+		try {
+			JSONArray resArr = new JSONArray(resources);
+			int resLen = resArr.length();
+			if(resLen > 0) {
+				for(int index = 0; index < resLen; index++) {
+					JSONObject res = resArr.getJSONObject(index);
+					RuleInfo r = new RuleInfo();
+					r.setId(res.getInt("resId"));
+					List<Account> list = new ArrayList<Account>();
+					JSONArray accounts = res.getJSONArray("accounts");
+					JSONArray protocols = res.getJSONArray("protocols");
+					for(int i = 0;i < accounts.length();i++) {
+						JSONObject accJson = accounts.getJSONObject(i);
+						Account acc = new Account();
+						acc.setId(accJson.getInt("id"));
+						list.add(acc);
+					}
+					r.setAccountList(list);
+					
+					int plen = protocols.length();
+					for(int i = 0;i < plen;i++) {
+						String protocol = protocols.getString(i);
+						if("RDP".equals(protocol)) {
+							r.setUseRdp(1);
+						}else if("SSH".equals(protocol)) {
+							r.setUseSsh(1);
+						}else if("SFTP".equals(protocol)) {
+							r.setUseSftp(1);
+						}
+					}
+					
+					ruleInfoList.add(r);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new RuntimeException("设备信息错误");
+		}
+		
 		Rule rule = ruleService.queryByName(name);
 		if(FortObjectUtil.isNotEmpty(rule)) {
 			throw new RuntimeException("授权名称重复，请重新输入");
@@ -111,7 +225,9 @@ public class RuleController {
 		r.setStatus(status);
 		r.setMemo(memo);
 		r.setCreateTime(new Date());
-		ruleService.insert(r);
+		int ruleId = ruleService.insert(r);
+		ruleService.insertResource(ruleId, ruleInfoList);
+		ruleService.insertUser(ruleId, empIdArr);
 		return "redirect:/rule/query";
 	}
 	
@@ -134,6 +250,62 @@ public class RuleController {
 			throw new RuntimeException("状态信息错误");
 		}
 		
+		int[] empIdArr = {};
+		try {
+			JSONArray userArr = new JSONArray(users);
+			int userLen = userArr.length();
+			if(userLen > 0) {
+				empIdArr = new int[userLen];
+				for(int index = 0;index < userLen;index++) {
+					JSONObject user = userArr.getJSONObject(index);
+					empIdArr[index] = user.getInt("id");
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new RuntimeException("用户信息错误");
+		}
+		
+		List<RuleInfo> ruleInfoList = new ArrayList<RuleInfo>();
+		try {
+			JSONArray resArr = new JSONArray(resources);
+			int resLen = resArr.length();
+			if(resLen > 0) {
+				for(int index = 0; index < resLen; index++) {
+					JSONObject res = resArr.getJSONObject(index);
+					RuleInfo r = new RuleInfo();
+					r.setId(res.getInt("resId"));
+					List<Account> list = new ArrayList<Account>();
+					JSONArray accounts = res.getJSONArray("accounts");
+					JSONArray protocols = res.getJSONArray("protocols");
+					for(int i = 0;i < accounts.length();i++) {
+						JSONObject accJson = accounts.getJSONObject(i);
+						Account acc = new Account();
+						acc.setId(accJson.getInt("id"));
+						list.add(acc);
+					}
+					r.setAccountList(list);
+					
+					int plen = protocols.length();
+					for(int i = 0;i < plen;i++) {
+						String protocol = protocols.getString(i);
+						if("RDP".equals(protocol)) {
+							r.setUseRdp(1);
+						}else if("SSH".equals(protocol)) {
+							r.setUseSsh(1);
+						}else if("SFTP".equals(protocol)) {
+							r.setUseSftp(1);
+						}
+					}
+					
+					ruleInfoList.add(r);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new RuntimeException("设备信息错误");
+		}
+		
 		Rule rule = ruleService.queryById(ruleId);
 		if(FortObjectUtil.isEmpty(rule)) {
 			throw new RuntimeException("该授权不存在或已被删除");
@@ -150,7 +322,8 @@ public class RuleController {
 		rule.setUpdateTime(new Date());
 		
 		ruleService.update(rule);
-		
+		ruleService.insertResource(ruleId, ruleInfoList);
+		ruleService.insertUser(ruleId, empIdArr);
 		return "redirect:/rule/query";
 	}
 	
