@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<!-- Meta -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+		<!-- Select2 Plugin -->
+		<script th:src="@{/common/theme/scripts/plugins/forms/select2/select2.js}"></script>
+		<style type="text/css">
+			.hand{
+				cursor:pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<ul class="breadcrumb">
+			<li><a href="javascript:void(0)" onclick="showMain('/sso/query')" class="glyphicons hdd"><i></i>设备管理</a></li>
+			<li class="divider"></li>
+			<li>设备列表</li>
+		</ul>
+		<div class="separator bottom"></div>
+		<div class="innerLR">
+			<div class="widget">
+				<!-- Widget heading -->
+				<div class="widget-head">
+					<h4 class="heading">设备列表</h4>
+				</div>
+				<!-- // Widget heading END -->
+				<div class="widget-body">
+					<div class="row-fluid">
+						<div class="span12">
+							<form th:action="@{/sso/query}" method="post">
+								<!-- Table -->
+								<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline" role="grid">
+									<div class="row-fluid">
+										<div class="span12">
+											<div id="DataTables_Table_0_length" class="dataTables_length">
+												<label>
+													<input type="text" name="paramQuery" th:value="${paramQuery}" aria-controls="DataTables_Table_0" style="margin-right: 5px;" placeholder="请输入查询条件">
+													<a onclick="query()" href="#" class="glyphicons no-js search" style="margin-top: 2px;"><i></i></a>
+													&nbsp;&nbsp;
+													<select name="status" style="width: 130px;">
+														<option th:selected="${status == -1 ? 'selected' : false}" value="-1">请选择状态</option>
+														<option th:selected="${status == 1 ? 'selected' : false}" value="1">激活</option>
+														<option th:selected="${status == 0 ? 'selected' : false}" value="0">锁定</option>
+													</select>
+													&nbsp;&nbsp;
+													<select name="typeId" style="width: 130px;">
+														<option value="-1">请选择设备类型</option>
+													</select>
+													&nbsp;&nbsp;
+													<select name="osId" style="width: 130px;">
+														<option value="-1">请选择操作系统</option>
+													</select>
+													<input type="hidden" id="typeId" th:value="${typeId}"/>
+													<input type="hidden" id="osId" th:value="${osId}"/>
+												</label>
+											</div>
+										</div>
+									</div>
+									<table class="dynamicTable table table-striped table-bordered table-condensed dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+										<!-- Table heading -->
+										<thead>
+											<tr role="row">
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 10px;">
+												  <div >
+													<input type="checkbox" class="checkbox" id="checkAll" style="width: 18px;"/>
+												  </div>
+												</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">设备名称</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">IP地址</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">设备类型</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">操作系统</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">授权名称</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 100px;">设备账号</th>
+												<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1">连接协议</th>
+											</tr>
+										</thead>
+										<!-- // Table heading END -->
+										<!-- Table body -->
+										
+										<tbody role="alert" aria-live="polite" aria-relevant="all">
+											<tr class="gradeA odd" th:if="${#lists.isEmpty(list)}">
+												<td colspan="8" style="text-align: center;">没有查询到匹配的信息</td>
+											</tr>
+											<tr class="gradeA odd" th:each="r:${list}">
+												<td class="">
+													<input type="checkbox" class="checkbox" th:id="${'id_' + r.id}" name="ids" style="width: 18px;background-color: #FFF;" th:value="${r.id}" />
+												</td>
+												<td style="vertical-align:middle;" class="" th:text="${r.name}"></td>
+												<td style="vertical-align:middle;" class="" th:text="${r.ip}"></td>
+												<td style="vertical-align:middle;" class="" th:text="${r.typeName}"></td>
+												<td style="vertical-align:middle;" class="" th:text="${r.osName}"></td>
+												<td style="vertical-align:middle;" class="" th:text="${r.ruleName}"></td>
+												<td class="" >
+													<select style="width: 130px;" name="accSelect">
+														<option th:each="acc:${r.accountList}" th:value="${acc.id}" th:text="${acc.name}"></option>
+													</select>
+												</td>
+												<td class="" >
+													<div id="accountSelect" class="select2-container select2-container-multi">
+														<ul class="select2-choices" style="border: 0;">
+															<li th:if="${r.useSsh eq 1}" class="select2-search-choice" style="padding-left: 3px;"><div class="hand account">SSH</div></li>
+															<li th:if="${r.useSftp eq 1}" class="select2-search-choice" style="padding-left: 3px;"><div class="hand account">SFTP</div></li>
+															<li th:if="${r.useRdp eq 1}" class="select2-search-choice" style="padding-left: 3px;"><div class="hand account">RDP</div></li>
+														</ul>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="row-fluid">
+										<div th:include="pages/commons/page :: page"></div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

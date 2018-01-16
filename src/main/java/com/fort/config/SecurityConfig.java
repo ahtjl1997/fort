@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/imgCode").permitAll()
 		//凡是登录成功的用户都可访问
-		.antMatchers("/home").hasRole(RoleConfig.LOGIN_USER)
+		.antMatchers("/home","/sso/**").hasRole(RoleConfig.LOGIN_USER)
 		//用户管理模块
 		.antMatchers("/employee/query","/employee/edit",
 				"/employee/insertPage").hasRole(RoleConfig.VIEW_EMP)

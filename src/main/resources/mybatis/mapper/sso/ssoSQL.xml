@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sso">
+	<resultMap type="ruleInfo" id="resourceResult">
+		<result property="id" 				column="res_id" 			javaType="int"/>
+		<result property="relId" 			column="id" 				javaType="int"/>
+		<result property="name" 			column="name" 				javaType="java.lang.String"/>
+		<result property="ip"	 			column="ip" 				javaType="java.lang.String"/>
+		<result property="typeName" 		column="type_name" 			javaType="java.lang.String"/>
+		<result property="osName" 			column="os_name" 			javaType="java.lang.String"/>
+		<result property="useSsh" 			column="use_ssh" 			javaType="int"/>
+		<result property="useSftp" 			column="use_sftp" 			javaType="int"/>
+		<result property="useRdp" 			column="use_rdp" 			javaType="int"/>
+		<result property="ruleId" 			column="rule_id" 			javaType="int"/>
+		<result property="ruleName" 		column="rule_name" 			javaType="java.lang.String"/>
+	</resultMap>
+	<select id="query" parameterType="java.util.HashMap" resultMap="resourceResult">
+		<![CDATA[
+			SELECT
+			  rrr.id,
+			  rrr.`res_id`,
+			  r.name,
+			  r.ip,
+			  r.type_name,
+			  r.os_name,
+			  CASE  WHEN r.use_ssh = 1 THEN rrr.`use_ssh` ELSE 0 END AS use_ssh,
+			  CASE  WHEN r.use_sftp = 1 THEN rrr.`use_sftp` ELSE 0 END AS use_sftp,
+			  CASE  WHEN r.use_rdp = 1 THEN rrr.`use_rdp` ELSE 0 END AS use_rdp,
+			  rrr.`rule_id`,
+			  rl.name AS rule_name
+			FROM `rel_rule_resource` rrr , rule rl, (
+			  SELECT r.id,r.`name`,r.ip,rt.`name` AS type_name,o.`name` AS os_name, r.`use_ssh`,r.`use_sftp`,r.`use_rdp`
+			  ,r.type_id,r.os_id,r.status		
+			  FROM resource r LEFT JOIN res_type rt ON r.`type_id` = rt.`id` LEFT JOIN os o ON r.`os_id` = o.`id`
+			) r,`rel_rule_employee` rre WHERE rrr.`rule_id` = rre.`rule_id` AND rrr.rule_id = rl.id AND rrr.`res_id` = r.`id`
+			AND rre.emp_id = #{empId}
+		]]>
+		<if test="keyword != null and keyword != ''">
+			<![CDATA[
+				AND (r.name LIKE CONCAT('%',#{keyword},'%') OR r.ip LIKE CONCAT('%',#{keyword},'%')
+				OR rl.name LIKE CONCAT('%',#{keyword},'%')
+				)
+			]]>
+		</if>
+		<if test="status != null and status != -1">
+			<![CDATA[
+				AND r.status = #{status}
+			]]>
+		</if>
+		<if test="osId != null and osId != -1">
+			<![CDATA[
+				AND r.os_id = #{osId}
+			]]>
+		</if>
+		<if test="typeId != null and typeId != -1">
+			<![CDATA[
+				AND r.type_id = #{typeId}
+			]]>
+		</if>
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(rrr.`id`) FROM `rel_rule_resource` rrr , rule rl, (
+			  SELECT r.id,r.`name`,r.ip,rt.`name` AS type_name,o.`name` AS os_name, r.`use_ssh`,r.`use_sftp`,r.`use_rdp`
+			  ,r.type_id,r.os_id,r.status
+			  FROM resource r LEFT JOIN res_type rt ON r.`type_id` = rt.`id` LEFT JOIN os o ON r.`os_id` = o.`id`
+			) r,`rel_rule_employee` rre WHERE rrr.`rule_id` = rre.`rule_id` AND rrr.rule_id = rl.id AND rrr.`res_id` = r.`id`
+			AND rre.emp_id = #{empId}
+		]]>
+		<if test="keyword != null and keyword != ''">
+			<![CDATA[
+				AND (r.name LIKE CONCAT('%',#{keyword},'%') OR r.ip LIKE CONCAT('%',#{keyword},'%')
+				OR rl.name LIKE CONCAT('%',#{keyword},'%')
+				)
+			]]>
+		</if>
+		<if test="status != null and status != -1">
+			<![CDATA[
+				AND r.status = #{status}
+			]]>
+		</if>
+		<if test="osId != null and osId != -1">
+			<![CDATA[
+				AND r.os_id = #{osId}
+			]]>
+		</if>
+		<if test="typeId != null and typeId != -1">
+			<![CDATA[
+				AND r.type_id = #{typeId}
+			]]>
+		</if>
+	</select>
+</mapper>
