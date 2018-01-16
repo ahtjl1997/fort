@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/resource/query","/resource/edit",
 				"/resource/insertPage").hasRole(RoleConfig.VIEW_RES)
 		.antMatchers("/resource/insert").hasRole(RoleConfig.NEW_RES)
-		.antMatchers("/resource/update").hasRole(RoleConfig.UPDATE_RES)
+		.antMatchers("/resource/update","/resource/status","/resource/statuss").hasRole(RoleConfig.UPDATE_RES)
 		.antMatchers("/resource/delete","/resource/deletes").hasRole(RoleConfig.DEL_RES)
 		.antMatchers("/resource/checkName","/resource/queryOs","/resource/queryType").hasAnyRole(RoleConfig.VIEW_RES,
 				RoleConfig.NEW_RES,RoleConfig.UPDATE_RES)
