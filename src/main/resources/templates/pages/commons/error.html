@@ -2,9 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8"></meta>
-<title>Insert title here</title>
+<title>运维审计系统</title>
 </head>
 <body>
-	This is <span th:text="${status}"></span> page.<span th:text="${roncooException}"></span>
+	<span th:if="${status eq 403}">你没有权限访问该功能</span>
+	<span th:if="${status eq 404}">找不到该页面</span>
+	<span th:if="${status eq 500}">服务器内部错误</span>
+	<span th:text="${roncooException}"></span>
 </body>
 </html>

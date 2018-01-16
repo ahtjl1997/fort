@@ -112,6 +112,7 @@ public class EmployeeDetailsService implements UserDetailsService {
 		if(FortObjectUtil.isEmpty(employee)) {
 			throw new RuntimeException("用户名密码错误");
 		}
+		employee.setRole(role);
 		employee.setAuthorities(roleList);
 		employee.setPassword("");
 		return employee;

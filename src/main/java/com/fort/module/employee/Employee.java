@@ -7,6 +7,8 @@ import java.util.Date;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fort.module.role.Role;
+
 /**
  * 用户实体信息类
  * @author zhangzhigong
@@ -62,6 +64,9 @@ public class Employee implements UserDetails, Serializable {
 	private int 	groupId = 0;
 	//分组名称
 	private String  groupName;
+	
+	//角色权限信息
+	private Role    role;
 	
 	public Employee() {
 		
@@ -264,6 +269,14 @@ public class Employee implements UserDetails, Serializable {
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 	/**

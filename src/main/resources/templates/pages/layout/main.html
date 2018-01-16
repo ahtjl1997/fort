@@ -147,16 +147,16 @@
 				<!-- Menu Regular Item -->
 				<li class="glyphicons display active"><a href="javascript:void('0');" onclick="showMain('/main/display')"><i></i><span>系统首页</span></a></li>
 				<!-- 用户管理 -->
-				<li class="hasSubmenu glyphicons user_add">
+				<li th:if="${ONLINE_USER.role.viewEmp eq 1 || ONLINE_USER.role.viewEmpGroup eq 1}" class="hasSubmenu glyphicons user_add">
 					<a data-toggle="collapse" href="#menu_user"><i></i><span>用户管理</span></a>
 					<ul class="collapse" id="menu_user">
 						<!-- User Submenu Level 2 -->
-						<li class=""><a href="javascript:void('0');" onclick="showMain('/employee/query',this)"><span>用户信息</span></a></li>
-						<li class=""><a href="javascript:void('0');" onclick="showMain('/employeeGroup/query',this)"><span>分组信息</span></a></li>
+						<li th:if="${ONLINE_USER.role.viewEmp eq 1}" class=""><a href="javascript:void('0');" onclick="showMain('/employee/query',this)"><span>用户信息</span></a></li>
+						<li th:if="${ONLINE_USER.role.viewEmpGroup eq 1}" class=""><a href="javascript:void('0');" onclick="showMain('/employeeGroup/query',this)"><span>分组信息</span></a></li>
 					</ul>
 				</li>
 				<!-- 角色管理 -->
-				<li class="hasSubmenu glyphicons eye_open">
+				<li th:if="${ONLINE_USER.role.viewRole eq 1}" class="hasSubmenu glyphicons eye_open">
 					<a data-toggle="collapse" href="#menu_role"><i></i><span>角色管理</span></a>
 					<ul class="collapse" id="menu_role">
 						<li class=""><a href="javascript:void('0');" onclick="showMain('/role/query',this)"><span>角色信息</span></a></li>
@@ -164,7 +164,7 @@
 				</li>
 				
 				<!-- 设备管理 -->
-				<li class="hasSubmenu glyphicons hdd">
+				<li  th:if="${ONLINE_USER.role.viewRes eq 1}" class="hasSubmenu glyphicons hdd">
 					<a data-toggle="collapse" href="#menu_resource"><i></i><span>设备管理</span></a>
 					<ul class="collapse" id="menu_resource">
 						<li class=""><a href="javascript:void('0');" onclick="showMain('/resource/query',this)"><span>设备信息</span></a></li>
@@ -172,7 +172,7 @@
 				</li>
 				
 				<!-- 运维授权 -->
-				<li class="hasSubmenu glyphicons shield">
+				<li th:if="${ONLINE_USER.role.viewEmp eq 1 && ONLINE_USER.role.viewRes eq 1}" class="hasSubmenu glyphicons shield">
 					<a data-toggle="collapse" href="#menu_rule"><i></i><span>运维授权</span></a>
 					<ul class="collapse" id="menu_rule">
 						<li class=""><a href="javascript:void('0');" onclick="showMain('/rule/query',this)"><span>授权信息</span></a></li>
