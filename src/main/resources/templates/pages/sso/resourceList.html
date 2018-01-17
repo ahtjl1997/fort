@@ -18,7 +18,7 @@
 	</head>
 	<body>
 		<ul class="breadcrumb">
-			<li><a href="javascript:void(0)" onclick="showMain('/sso/query')" class="glyphicons hdd"><i></i>设备管理</a></li>
+			<li><a href="javascript:void(0)" onclick="showMain('/sso/query')" class="glyphicons keyboard-wireless"><i></i>设备运维</a></li>
 			<li class="divider"></li>
 			<li>设备列表</li>
 		</ul>
@@ -43,17 +43,11 @@
 													<input type="text" name="paramQuery" th:value="${paramQuery}" aria-controls="DataTables_Table_0" style="margin-right: 5px;" placeholder="请输入查询条件">
 													<a onclick="query()" href="#" class="glyphicons no-js search" style="margin-top: 2px;"><i></i></a>
 													&nbsp;&nbsp;
-													<select name="status" style="width: 130px;">
-														<option th:selected="${status == -1 ? 'selected' : false}" value="-1">请选择状态</option>
-														<option th:selected="${status == 1 ? 'selected' : false}" value="1">激活</option>
-														<option th:selected="${status == 0 ? 'selected' : false}" value="0">锁定</option>
-													</select>
-													&nbsp;&nbsp;
-													<select name="typeId" style="width: 130px;">
+													<select name="typeId" style="width: 150px;">
 														<option value="-1">请选择设备类型</option>
 													</select>
 													&nbsp;&nbsp;
-													<select name="osId" style="width: 130px;">
+													<select name="osId" style="width: 150px;">
 														<option value="-1">请选择操作系统</option>
 													</select>
 													<input type="hidden" id="typeId" th:value="${typeId}"/>
@@ -123,5 +117,73 @@
 				</div>
 			</div>
 		</div>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("input[name='paramQuery']").keypress(function(event){
+					if(event.keyCode == 13){
+						query();
+					}
+				});
+				
+				$("#checkAll").click(function(){
+					if($(this).prop("checked")){
+						$("input[name='ids']").prop("checked",true);
+					}else{
+						$("input[name='ids']").prop("checked",false);
+					}
+				});
+				
+				$("select[name='typeId']").on('change',function(){
+					queryOs($(this).val());
+					query();
+				});
+				$("select[name='osId']").on('change',function(){
+					query();
+				});
+				
+				
+				$.ajax({
+					url:'/resource/queryType',
+					type:'get',
+					async:false,
+					dataType:'json',
+					success:function(result){
+						var type_id = $("#typeId").val();
+						queryOs(type_id);
+						$.each(result,function(index,item){
+							if(item.id == type_id){
+								$("select[name='typeId']").append('<option value=' + item.id + ' selected=selected>' + item.name + '</option>');
+							}else{
+								$("select[name='typeId']").append('<option value=' + item.id + '>' + item.name + '</option>');
+							}
+						});
+						$("select[name='typeId']").select2();
+					}
+				});
+				
+				function queryOs(typeId){
+					$.ajax({
+						url:'/resource/queryOs',
+						type:'get',
+						async:true,
+						data:'typeId=' + typeId,
+						dataType:'json',
+						success:function(result){
+							var os_id = $("#osId").val();
+							$("select[name='osId']").find('option').remove();
+							$("select[name='osId']").append("<option value='-1' selected=selected>请选择操作系统</option>");
+							$.each(result,function(index,item){
+								if(item.id == os_id){
+									$("select[name='osId']").append('<option selected=\'selected\' value=' + item.id + '>' + item.name + '</option>');
+								}else{
+									$("select[name='osId']").append('<option value=' + item.id + '>' + item.name + '</option>');
+								}
+							});
+							$("select[name='osId']").select2();
+						}
+					});
+				}
+			});
+		</script>
 	</body>
 </html>
