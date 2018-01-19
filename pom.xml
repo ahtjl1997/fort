@@ -109,6 +109,12 @@
 		    <artifactId>json</artifactId>
 		    <version>20090211</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.sshd/sshd-core -->
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-core</artifactId>
+			<version>1.6.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>fort</finalName>
