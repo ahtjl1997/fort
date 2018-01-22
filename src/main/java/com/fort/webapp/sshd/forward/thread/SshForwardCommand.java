@@ -21,6 +21,9 @@ import org.apache.sshd.server.SessionAware;
 import org.apache.sshd.server.session.ServerSession;
 import org.springframework.stereotype.Service;
 
+import com.fort.webapp.sshd.forward.io.FortForwardErrOutputStream;
+import com.fort.webapp.sshd.forward.io.FortForwardInputStream;
+import com.fort.webapp.sshd.forward.io.FortForwardOutputStream;
 import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
@@ -55,10 +58,10 @@ public class SshForwardCommand implements Command, SessionAware,Runnable {
 				ClientSession cs = cf.getSession();
 				cs.addPasswordIdentity("root");
 				cs.auth().verify(5L, TimeUnit.SECONDS);
-				ClientChannel cc = cs.createChannel(ClientChannel.CHANNEL_SHELL);
-				cc.setIn(in);
-				cc.setErr(err);
-				cc.setOut(out);
+				ClientChannel cc = cs.createShellChannel();
+				cc.setIn(new FortForwardInputStream(in));
+				cc.setErr(new FortForwardErrOutputStream(err));
+				cc.setOut(new FortForwardOutputStream(out));
 				cc.open().await();
 				cc.addChannelListener(new ChannelListener() {
 					@Override
