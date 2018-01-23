@@ -7,7 +7,7 @@ public class FortForwardErrOutputStream extends OutputStream {
 
 	private OutputStream err;
 	
-	public FortForwardErrOutputStream(OutputStream err) {
+	public FortForwardErrOutputStream(OutputStream err,String sessionId) {
 		this.err = err;
 	}
 	

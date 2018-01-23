@@ -3,6 +3,9 @@ package com.fort.webapp.sshd.forward.thread;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.sshd.client.SshClient;
@@ -24,8 +27,12 @@ import org.springframework.stereotype.Service;
 import com.fort.webapp.sshd.forward.io.FortForwardErrOutputStream;
 import com.fort.webapp.sshd.forward.io.FortForwardInputStream;
 import com.fort.webapp.sshd.forward.io.FortForwardOutputStream;
+import com.fort.webapp.sshd.monitor.pool.MonitorIo;
+import com.fort.webapp.sshd.monitor.pool.MonitorPool;
 import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import com.util.RandomUtil;
+import com.util.StringUtil;
 
 public class SshForwardCommand implements Command, SessionAware,Runnable {
 
@@ -43,14 +50,17 @@ public class SshForwardCommand implements Command, SessionAware,Runnable {
 	
 	@Override
 	public void run() {
+		final String sessionId = RandomUtil.GetGuid32();
+		System.out.println("sessionId:" + sessionId);
+		MonitorPool.pool.put(sessionId, new HashMap<String,MonitorIo>());
 		String username = session.getUsername();
 		System.out.println("username:" + username);
-		String[] userArr = username.split("@");
-		String user = userArr[1];
-		String host = userArr[2];
-		String port = userArr[3];
 		SshClient client = SshClient.setUpDefaultClient();
 		try {
+			String[] userArr = username.split("@");
+			String user = userArr[1];
+			String host = userArr[2];
+			String port = userArr[3];
 			client.start();
 			ConnectFuture cf = client.connect(user, host, Integer.valueOf(port));
 			if(cf != null) {
@@ -60,13 +70,22 @@ public class SshForwardCommand implements Command, SessionAware,Runnable {
 				cs.auth().verify(5L, TimeUnit.SECONDS);
 				ClientChannel cc = cs.createShellChannel();
 				cc.setIn(new FortForwardInputStream(in));
-				cc.setErr(new FortForwardErrOutputStream(err));
-				cc.setOut(new FortForwardOutputStream(out));
+				cc.setErr(new FortForwardErrOutputStream(err,sessionId));
+				cc.setOut(new FortForwardOutputStream(out,sessionId));
 				cc.open().await();
 				cc.addChannelListener(new ChannelListener() {
 					@Override
 					public void channelClosed(Channel channel, Throwable reason) {
 						callback.onExit(0);
+						Map<String,MonitorIo> monitorMap = MonitorPool.pool.get(sessionId);
+						if(monitorMap != null) {
+							synchronized (monitorMap) {
+								for(Entry<String,MonitorIo> entry : monitorMap.entrySet()) {
+									MonitorIo monitor = entry.getValue();
+									monitor.getCallback().onExit(0);
+								}
+							}
+						}
 					}
 				});
 			}
@@ -127,5 +146,4 @@ public class SshForwardCommand implements Command, SessionAware,Runnable {
 	public void setExitCallback(ExitCallback callback) {
 		this.callback = callback;
 	}
-
 }
